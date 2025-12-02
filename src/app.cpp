@@ -7,7 +7,12 @@
 #include "utils.h"
 #include "shader.h"
 
+int currentWindowWidth = DEFAULT_WINDOW_WIDTH;
+int currentWindowHeight = DEFAULT_WINDOW_HEIGHT;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    currentWindowWidth = width;
+    currentWindowHeight = height;
     glViewport(0, 0, width, height);
 }
 
@@ -78,10 +83,16 @@ void App::mainLoop() {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
 
-        glm::mat4 transformMatrix = glm::mat4(1.0f);
-        transformMatrix = glm::translate(transformMatrix, glm::vec3(0.5f, -0.5f, 0.0f));
-        transformMatrix = glm::rotate(transformMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        shader.setMat4("transform", transformMatrix);
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
+        modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 view = glm::mat4(1.0f);
+        view = glm::translate(view, glm::vec3(currentWindowWidth / 2.0f, currentWindowHeight / 2.0f, 0.0f)); 
+        glm::mat4 projection = glm::mat4(1.0f);
+        projection = glm::ortho(0.0f, (float)currentWindowWidth, 0.0f, (float)currentWindowHeight, -1.0f, 1.0f);
+        shader.setMat4("model", modelMatrix);
+        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
         shader.use();
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
