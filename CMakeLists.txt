@@ -11,12 +11,14 @@ add_subdirectory(glfw)
 
 add_executable(${PROJECT_NAME}
     main.cpp
-    utils.cpp
+    src/app.cpp
+    src/utils.cpp
     glad/src/glad.c
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     glad/include
+    include
 )
 
 if(WIN32)
