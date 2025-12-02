@@ -1,6 +1,6 @@
 #include "utils.h"
 
-std::string file_to_str(std::filesystem::path path) {
+std::string file_to_str(const std::filesystem::path& path) {
     if (!std::filesystem::exists(path)) {
         throw std::format("File not found: {}", path.string());
     }
