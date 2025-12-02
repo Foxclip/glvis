@@ -15,8 +15,6 @@ add_subdirectory(tests)
 add_library(${PROJECT_NAME})
 set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(SRC_DIR ${PROJECT_SOURCE_DIR}/src)
-set(GLAD_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/glad/include)
-set(GLAD_SRC_DIR ${PROJECT_SOURCE_DIR}/glad/src)
 
 target_sources(${PROJECT_NAME} PRIVATE
     ${SRC_DIR}/app.cpp
