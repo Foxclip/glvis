@@ -8,8 +8,12 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
 set(GLFW_INSTALL OFF CACHE INTERNAL "" FORCE)
 
+set(GLM_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
+set(GLM_BUILD_INSTALL OFF CACHE INTERNAL "" FORCE)
+
 add_subdirectory(glfw)
 add_subdirectory(glad)
+add_subdirectory(glm)
 add_subdirectory(tests)
 
 add_library(${PROJECT_NAME})
@@ -31,3 +35,4 @@ else()
     target_link_libraries(${PROJECT_NAME} PRIVATE glfw OpenGL::GL)
 endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC glad)
+target_link_libraries(${PROJECT_NAME} PUBLIC glm::glm)
