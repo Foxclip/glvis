@@ -4,13 +4,22 @@
 #include "utils.h"
 #include "shader.h"
 
-int currentWindowWidth = DEFAULT_WINDOW_WIDTH;
-int currentWindowHeight = DEFAULT_WINDOW_HEIGHT;
+App* app = nullptr;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    currentWindowWidth = width;
-    currentWindowHeight = height;
-    glViewport(0, 0, width, height);
+    app->processWindowSize(width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    app->processMouse(xpos, ypos);
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    app->processMousePress(button, action, mods);
+}
+
+void scroll_callback(GLFWwindow* window, double x, double y) {
+    app->processScroll(x, y);
 }
 
 GLFWwindow* App::init() {
@@ -40,8 +49,52 @@ GLFWwindow* App::init() {
     }
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);  
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     return window;
+}
+
+void App::processWindowSize(int width, int height) {
+    currentWindowWidth = width;
+    currentWindowHeight = height;
+    glViewport(0, 0, width, height);
+}
+
+void App::processMouse(double xpos, double ypos) {
+    if (firstMouse) {
+        mouseLastX = (int)xpos;
+        mouseLastY = (int)ypos;
+        firstMouse = false;
+    }
+    float xoffset = (float)(xpos - mouseLastX);
+    float yoffset = (float)(ypos - mouseLastY);
+    if (rightMousePressed) {
+        camera.pos.x -= xoffset;
+        camera.pos.y += yoffset;
+    }
+    mouseLastX = (int)xpos;
+    mouseLastY = (int)ypos;
+}
+
+void App::processMousePress(int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        leftMousePressed = true;
+    } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+        leftMousePressed = false;
+    } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+        rightMousePressed = true;
+    } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+        rightMousePressed = false;
+    }
+}
+
+void App::processScroll(double x, double y) {
+    double zoomFactor = pow(CAMERA_ZOOM_FACTOR, y);
+    camera.zoom *= zoomFactor;
+    camera.pos.x = (float)(camera.pos.x * zoomFactor);
+    camera.pos.y = (float)(camera.pos.y * zoomFactor);
 }
 
 void App::mainLoop() {
@@ -101,6 +154,7 @@ void App::mainLoop() {
 }
 
 App::App() {
+    app = this;
     window = init();
     if (!window) {
         throw std::runtime_error("Failed to initialize GLFW window");
