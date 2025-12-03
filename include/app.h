@@ -37,6 +37,8 @@ private:
     Camera camera;
     int mouseX = 0;
     int mouseY = 0;
+    double mouseXWorld = 0.0;
+    double mouseYWorld = 0.0;
     bool firstMouse = true;
     bool leftMousePressed = false;
     bool rightMousePressed = false;
@@ -45,8 +47,8 @@ private:
     void mainLoop();
     glm::mat4 getViewMatrix();
     glm::mat4 getInvViewMatrix();
-    glm::dvec2 screenToWorld(int x, int y);
     glm::dvec2 worldToScreen(double x, double y);
+    glm::dvec2 screenToWorld(int x, int y);
     void processMouseLeftPress(int x, int y);
     void processMouseRightPress(int x, int y);
 

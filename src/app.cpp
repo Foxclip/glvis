@@ -66,16 +66,20 @@ void App::processMouse(double xpos, double ypos) {
     if (firstMouse) {
         mouseX = (int)xpos;
         mouseY = (int)ypos;
+        mouseXWorld = screenToWorld(mouseX, mouseY).x;
+        mouseYWorld = screenToWorld(mouseX, mouseY).y;
         firstMouse = false;
     }
-    float xoffset = (float)(xpos - mouseX);
-    float yoffset = (float)(ypos - mouseY);
+    double xoffset = xpos - mouseX;
+    double yoffset = ypos - mouseY;
     if (rightMousePressed) {
-        camera.pos.x -= (float)(xoffset / camera.zoom);
-        camera.pos.y -= (float)(yoffset / camera.zoom);
+        camera.pos.x -= xoffset / camera.zoom;
+        camera.pos.y -= yoffset / camera.zoom;
     }
     mouseX = (int)xpos;
     mouseY = (int)ypos;
+    mouseXWorld = screenToWorld(mouseX, mouseY).x;
+    mouseYWorld = screenToWorld(mouseX, mouseY).y;
 }
 
 void App::processMousePress(int button, int action, int mods) {
@@ -95,12 +99,11 @@ void App::processMousePress(int button, int action, int mods) {
 void App::processScroll(double x, double y) {
     double zoomFactor = pow(CAMERA_ZOOM_FACTOR, y);
     camera.zoom *= zoomFactor;
+    camera.pos.x = (camera.pos.x - mouseXWorld) / zoomFactor + mouseXWorld;
+    camera.pos.y = (camera.pos.y - mouseYWorld) / zoomFactor + mouseYWorld;
 }
 
 void App::mainLoop() {
-
-    glm::vec2 screenPos = worldToScreen(0.0f, 0.0f);
-    std::cout << std::format("World: ({}, {}) Screen: ({}, {})", 0.0f, 0.0f, screenPos.x, screenPos.y) << std::endl;
 
     Shader shader("shaders/simple.vert", "shaders/simple.frag");
 
@@ -180,17 +183,17 @@ glm::mat4 App::getInvViewMatrix() {
     return invView;
 }
 
-glm::dvec2 App::screenToWorld(int x, int y) {
-    glm::mat4 invView = getInvViewMatrix();
-    glm::dvec4 point = invView * glm::dvec4(x, currentWindowHeight - y, 0.0, 1.0);
-    glm::dvec2 result = glm::dvec2(point.x, point.y);
-    return result;
-}
-
 glm::dvec2 App::worldToScreen(double x, double y) {
     glm::mat4 view = getViewMatrix();
     glm::dvec4 point = view * glm::dvec4(x, y, 0.0, 1.0);
     glm::dvec2 result = glm::dvec2(point.x, currentWindowHeight - point.y);
+    return result;
+}
+
+glm::dvec2 App::screenToWorld(int x, int y) {
+    glm::mat4 invView = getInvViewMatrix();
+    glm::dvec4 point = invView * glm::dvec4(x, currentWindowHeight - y, 0.0, 1.0);
+    glm::dvec2 result = glm::dvec2(point.x, point.y);
     return result;
 }
 
