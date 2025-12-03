@@ -6,52 +6,56 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-const int DEFAULT_WINDOW_WIDTH = 800;
-const int DEFAULT_WINDOW_HEIGHT = 600;
-const double CAMERA_ZOOM_FACTOR = 1.2;
+namespace glvis {
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-void scroll_callback(GLFWwindow* window, double x, double y);
+    const int DEFAULT_WINDOW_WIDTH = 800;
+    const int DEFAULT_WINDOW_HEIGHT = 600;
+    const double CAMERA_ZOOM_FACTOR = 1.2;
 
-struct Camera {
-    glm::dvec2 pos = glm::dvec2(0.0f, 100.0f);
-    double zoom = 1.0f;
-};
+    void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+    void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+    void scroll_callback(GLFWwindow* window, double x, double y);
 
-class App {
+    struct Camera {
+        glm::dvec2 pos = glm::dvec2(0.0f, 100.0f);
+        double zoom = 1.0f;
+    };
 
-public:
-    App();
-    ~App();
-    void processWindowSize(int width, int height);
-    void processMouse(double xpos, double ypos);
-    void processMousePress(int button, int action, int mods);
-    void processScroll(double x, double y);
+    class App {
 
-private:
-    GLFWwindow* window = nullptr;
-    int currentWindowWidth = DEFAULT_WINDOW_WIDTH;
-    int currentWindowHeight = DEFAULT_WINDOW_HEIGHT;
-    Camera camera;
-    int mouseX = 0;
-    int mouseY = 0;
-    double mouseXWorld = 0.0;
-    double mouseYWorld = 0.0;
-    bool firstMouse = true;
-    bool leftMousePressed = false;
-    bool rightMousePressed = false;
+    public:
+        App();
+        ~App();
+        void processWindowSize(int width, int height);
+        void processMouse(double xpos, double ypos);
+        void processMousePress(int button, int action, int mods);
+        void processScroll(double x, double y);
 
-    GLFWwindow* init();
-    void mainLoop();
-    glm::mat4 getViewMatrix();
-    glm::mat4 getInvViewMatrix();
-    glm::dvec2 worldToScreen(double x, double y);
-    glm::dvec2 screenToWorld(int x, int y);
-    void processMouseLeftPress(int x, int y);
-    void processMouseRightPress(int x, int y);
+    private:
+        GLFWwindow* window = nullptr;
+        int currentWindowWidth = DEFAULT_WINDOW_WIDTH;
+        int currentWindowHeight = DEFAULT_WINDOW_HEIGHT;
+        Camera camera;
+        int mouseX = 0;
+        int mouseY = 0;
+        double mouseXWorld = 0.0;
+        double mouseYWorld = 0.0;
+        bool firstMouse = true;
+        bool leftMousePressed = false;
+        bool rightMousePressed = false;
 
-};
+        GLFWwindow* init();
+        void mainLoop();
+        glm::mat4 getViewMatrix();
+        glm::mat4 getInvViewMatrix();
+        glm::dvec2 worldToScreen(double x, double y);
+        glm::dvec2 screenToWorld(int x, int y);
+        void processMouseLeftPress(int x, int y);
+        void processMouseRightPress(int x, int y);
 
-extern App* app;
+    };
+
+    extern App* app;
+
+}

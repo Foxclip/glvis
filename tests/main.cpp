@@ -4,7 +4,7 @@
 int main() {
 
     try {
-        App app;
+        glvis::App app;
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
     } catch (std::string& e) {

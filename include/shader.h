@@ -5,24 +5,28 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-enum ShaderType {
-    VERTEX,
-    FRAGMENT
-};
+namespace glvis {
 
-class Shader
-{
-public:
-    unsigned int ID;
-  
-    Shader(const std::string& vertexPath, const std::string& fragmentPath);
-    void use();
-    void setBool(const std::string& name, bool value) const;  
-    void setInt(const std::string& name, int value) const;   
-    void setFloat(const std::string& name, float value) const;
-    void setMat4(const std::string& name, const glm::mat4& value) const;
+    enum ShaderType {
+        VERTEX,
+        FRAGMENT
+    };
 
-private:
-    int compileShader(ShaderType type, const std::string& path);
+    class Shader
+    {
+    public:
+        unsigned int ID;
+    
+        Shader(const std::string& vertexPath, const std::string& fragmentPath);
+        void use();
+        void setBool(const std::string& name, bool value) const;  
+        void setInt(const std::string& name, int value) const;   
+        void setFloat(const std::string& name, float value) const;
+        void setMat4(const std::string& name, const glm::mat4& value) const;
 
-};
+    private:
+        int compileShader(ShaderType type, const std::string& path);
+
+    };
+
+}
