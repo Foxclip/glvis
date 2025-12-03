@@ -84,7 +84,6 @@ namespace glvis {
             {
                 glm::mat4 modelMatrix = glm::mat4(1.0f);
                 modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
-                // modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
                 shader.setMat4("model", modelMatrix);
                 shader.setMat4("view", view);
                 shader.setMat4("projection", projection);
@@ -137,23 +136,27 @@ namespace glvis {
     }
 
     void App::framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
-        app->processWindowSize(width, height);
+        if (App* app = static_cast<App*>(glfwGetWindowUserPointer(window))) {
+            app->processWindowSize(width, height);
+        }
     }
 
     void App::mouse_callback(GLFWwindow *window, double xpos, double ypos) {
-        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
-        app->processMouse(xpos, ypos);
+        if (App* app = static_cast<App*>(glfwGetWindowUserPointer(window))) {
+            app->processMouse(xpos, ypos);
+        }
     }
 
     void App::mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
-        app->processMousePress(button, action, mods);
+        if (App* app = static_cast<App*>(glfwGetWindowUserPointer(window))) {
+            app->processMousePress(button, action, mods);
+        }
     }
 
     void App::scroll_callback(GLFWwindow *window, double x, double y) {
-        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
-        app->processMouseScroll(x, y);
+        if (App* app = static_cast<App*>(glfwGetWindowUserPointer(window))) {
+            app->processMouseScroll(x, y);
+        }
     }
 
     void App::processWindowSize(int width, int height) {
