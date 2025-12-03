@@ -71,8 +71,8 @@ void App::processMouse(double xpos, double ypos) {
     float xoffset = (float)(xpos - mouseLastX);
     float yoffset = (float)(ypos - mouseLastY);
     if (rightMousePressed) {
-        camera.pos.x -= xoffset;
-        camera.pos.y += yoffset;
+        camera.pos.x -= (float)(xoffset / camera.zoom);
+        camera.pos.y += (float)(yoffset / camera.zoom);
     }
     mouseLastX = (int)xpos;
     mouseLastY = (int)ypos;
@@ -93,8 +93,6 @@ void App::processMousePress(int button, int action, int mods) {
 void App::processScroll(double x, double y) {
     double zoomFactor = pow(CAMERA_ZOOM_FACTOR, y);
     camera.zoom *= zoomFactor;
-    camera.pos.x = (float)(camera.pos.x * zoomFactor);
-    camera.pos.y = (float)(camera.pos.y * zoomFactor);
 }
 
 void App::mainLoop() {
@@ -133,8 +131,9 @@ void App::mainLoop() {
         glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
 
         glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(currentWindowWidth / 2.0f - camera.pos.x, currentWindowHeight / 2.0f - camera.pos.y, 0.0f));
+        view = glm::translate(view, glm::vec3(currentWindowWidth / 2, currentWindowHeight / 2, 0.0f));
         view = glm::scale(view, glm::vec3(camera.zoom, camera.zoom, 1.0f));
+        view = glm::translate(view, glm::vec3(-camera.pos.x, -camera.pos.y, 0.0f));
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::ortho(0.0f, (float)currentWindowWidth, 0.0f, (float)currentWindowHeight, -1.0f, 1.0f);
 
