@@ -1,7 +1,4 @@
 #include <iostream>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include "utils.h"
 #include "app.h"
 #include "utils.h"
@@ -52,10 +49,9 @@ void App::mainLoop() {
     Shader shader("shaders/simple.vert", "shaders/simple.frag");
 
     float vertices[] = {
-        // positions         // colors
-         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f
     };
     unsigned int indices[] = {
         0, 1, 2,
@@ -83,13 +79,15 @@ void App::mainLoop() {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
 
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
-        modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
         glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(currentWindowWidth / 2.0f, currentWindowHeight / 2.0f, 0.0f)); 
+        view = glm::translate(view, glm::vec3(currentWindowWidth / 2.0f - camera.pos.x, currentWindowHeight / 2.0f - camera.pos.y, 0.0f));
+        view = glm::scale(view, glm::vec3(camera.zoom, camera.zoom, 1.0f));
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::ortho(0.0f, (float)currentWindowWidth, 0.0f, (float)currentWindowHeight, -1.0f, 1.0f);
+
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
+        // modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
         shader.setMat4("model", modelMatrix);
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
