@@ -6,24 +6,6 @@
 
 namespace glvis {
 
-    App* app = nullptr;
-
-    void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-        app->processWindowSize(width, height);
-    }
-
-    void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-        app->processMouse(xpos, ypos);
-    }
-
-    void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-        app->processMousePress(button, action, mods);
-    }
-
-    void scroll_callback(GLFWwindow* window, double x, double y) {
-        app->processScroll(x, y);
-    }
-
     GLFWwindow* App::init() {
         if (!glfwInit()) {
             std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -50,59 +32,14 @@ namespace glvis {
             return nullptr;
         }
 
+        glfwSetWindowUserPointer(window, this);
+        
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwSetCursorPosCallback(window, mouse_callback);  
         glfwSetMouseButtonCallback(window, mouse_button_callback);
         glfwSetScrollCallback(window, scroll_callback);
 
         return window;
-    }
-
-    void App::processWindowSize(int width, int height) {
-        currentWindowWidth = width;
-        currentWindowHeight = height;
-        glViewport(0, 0, width, height);
-    }
-
-    void App::processMouse(double xpos, double ypos) {
-        if (firstMouse) {
-            mouseX = (int)xpos;
-            mouseY = (int)ypos;
-            mouseXWorld = screenToWorld(mouseX, mouseY).x;
-            mouseYWorld = screenToWorld(mouseX, mouseY).y;
-            firstMouse = false;
-        }
-        double xoffset = xpos - mouseX;
-        double yoffset = ypos - mouseY;
-        if (rightMousePressed) {
-            camera.pos.x -= xoffset / camera.zoom;
-            camera.pos.y -= yoffset / camera.zoom;
-        }
-        mouseX = (int)xpos;
-        mouseY = (int)ypos;
-        mouseXWorld = screenToWorld(mouseX, mouseY).x;
-        mouseYWorld = screenToWorld(mouseX, mouseY).y;
-    }
-
-    void App::processMousePress(int button, int action, int mods) {
-        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-            leftMousePressed = true;
-            processMouseLeftPress(mouseX, mouseY);
-        } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-            leftMousePressed = false;
-        } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-            rightMousePressed = true;
-            processMouseRightPress(mouseX, mouseY);
-        } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
-            rightMousePressed = false;
-        }
-    }
-
-    void App::processScroll(double x, double y) {
-        double zoomFactor = pow(CAMERA_ZOOM_FACTOR, y);
-        camera.zoom *= zoomFactor;
-        camera.pos.x = (camera.pos.x - mouseXWorld) / zoomFactor + mouseXWorld;
-        camera.pos.y = (camera.pos.y - mouseYWorld) / zoomFactor + mouseYWorld;
     }
 
     void App::mainLoop() {
@@ -199,6 +136,73 @@ namespace glvis {
         return result;
     }
 
+    void App::framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+        app->processWindowSize(width, height);
+    }
+
+    void App::mouse_callback(GLFWwindow *window, double xpos, double ypos) {
+        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+        app->processMouse(xpos, ypos);
+    }
+
+    void App::mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+        app->processMousePress(button, action, mods);
+    }
+
+    void App::scroll_callback(GLFWwindow *window, double x, double y) {
+        App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+        app->processMouseScroll(x, y);
+    }
+
+    void App::processWindowSize(int width, int height) {
+        currentWindowWidth = width;
+        currentWindowHeight = height;
+        glViewport(0, 0, width, height);
+    }
+
+    void App::processMouse(double xpos, double ypos) {
+        if (firstMouse) {
+            mouseX = (int)xpos;
+            mouseY = (int)ypos;
+            mouseXWorld = screenToWorld(mouseX, mouseY).x;
+            mouseYWorld = screenToWorld(mouseX, mouseY).y;
+            firstMouse = false;
+        }
+        double xoffset = xpos - mouseX;
+        double yoffset = ypos - mouseY;
+        if (rightMousePressed) {
+            camera.pos.x -= xoffset / camera.zoom;
+            camera.pos.y -= yoffset / camera.zoom;
+        }
+        mouseX = (int)xpos;
+        mouseY = (int)ypos;
+        mouseXWorld = screenToWorld(mouseX, mouseY).x;
+        mouseYWorld = screenToWorld(mouseX, mouseY).y;
+    }
+
+    void App::processMousePress(int button, int action, int mods) {
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+            leftMousePressed = true;
+            processMouseLeftPress(mouseX, mouseY);
+        } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+            leftMousePressed = false;
+        } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+            rightMousePressed = true;
+            processMouseRightPress(mouseX, mouseY);
+        } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+            rightMousePressed = false;
+        }
+    }
+
+    void App::processMouseScroll(double x, double y) {
+        double zoomFactor = pow(CAMERA_ZOOM_FACTOR, y);
+        camera.zoom *= zoomFactor;
+        camera.pos.x = (camera.pos.x - mouseXWorld) / zoomFactor + mouseXWorld;
+        camera.pos.y = (camera.pos.y - mouseYWorld) / zoomFactor + mouseYWorld;
+    }
+
     void App::processMouseLeftPress(int x, int y) {
         glm::dvec2 worldPos = screenToWorld(x, y);
         std::cout << std::format("Screen: ({}, {}) World: ({}, {})", x, y, worldPos.x, worldPos.y) << std::endl;
@@ -208,7 +212,6 @@ namespace glvis {
     }
 
     App::App() {
-        app = this;
         window = init();
         if (!window) {
             throw std::runtime_error("Failed to initialize GLFW window");
