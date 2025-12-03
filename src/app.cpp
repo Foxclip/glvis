@@ -64,27 +64,29 @@ void App::processWindowSize(int width, int height) {
 
 void App::processMouse(double xpos, double ypos) {
     if (firstMouse) {
-        mouseLastX = (int)xpos;
-        mouseLastY = (int)ypos;
+        mouseX = (int)xpos;
+        mouseY = (int)ypos;
         firstMouse = false;
     }
-    float xoffset = (float)(xpos - mouseLastX);
-    float yoffset = (float)(ypos - mouseLastY);
+    float xoffset = (float)(xpos - mouseX);
+    float yoffset = (float)(ypos - mouseY);
     if (rightMousePressed) {
         camera.pos.x -= (float)(xoffset / camera.zoom);
-        camera.pos.y += (float)(yoffset / camera.zoom);
+        camera.pos.y -= (float)(yoffset / camera.zoom);
     }
-    mouseLastX = (int)xpos;
-    mouseLastY = (int)ypos;
+    mouseX = (int)xpos;
+    mouseY = (int)ypos;
 }
 
 void App::processMousePress(int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         leftMousePressed = true;
+        processMouseLeftPress(mouseX, mouseY);
     } else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         leftMousePressed = false;
     } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
         rightMousePressed = true;
+        processMouseRightPress(mouseX, mouseY);
     } else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
         rightMousePressed = false;
     }
@@ -96,6 +98,9 @@ void App::processScroll(double x, double y) {
 }
 
 void App::mainLoop() {
+
+    glm::vec2 screenPos = worldToScreen(0.0f, 0.0f);
+    std::cout << std::format("World: ({}, {}) Screen: ({}, {})", 0.0f, 0.0f, screenPos.x, screenPos.y) << std::endl;
 
     Shader shader("shaders/simple.vert", "shaders/simple.frag");
 
@@ -130,26 +135,71 @@ void App::mainLoop() {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
 
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(currentWindowWidth / 2, currentWindowHeight / 2, 0.0f));
-        view = glm::scale(view, glm::vec3(camera.zoom, camera.zoom, 1.0f));
-        view = glm::translate(view, glm::vec3(-camera.pos.x, -camera.pos.y, 0.0f));
+        glm::mat4 view = getViewMatrix();
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::ortho(0.0f, (float)currentWindowWidth, 0.0f, (float)currentWindowHeight, -1.0f, 1.0f);
 
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
-        modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
-        // modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        shader.setMat4("model", modelMatrix);
-        shader.setMat4("view", view);
-        shader.setMat4("projection", projection);
-        shader.use();
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        {
+            glm::mat4 modelMatrix = glm::mat4(1.0f);
+            modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
+            // modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+            shader.setMat4("model", modelMatrix);
+            shader.setMat4("view", view);
+            shader.setMat4("projection", projection);
+            shader.use();
+            glBindVertexArray(VAO);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        }
+
+        {
+            glm::mat4 modelMatrix = glm::mat4(1.0f);
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(200.0f, 0.0f, 0.0f));
+            modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
+            shader.setMat4("model", modelMatrix);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+}
+
+glm::mat4 App::getViewMatrix() {
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(currentWindowWidth / 2, currentWindowHeight / 2, 0.0f));
+    view = glm::scale(view, glm::vec3(camera.zoom, -camera.zoom, 1.0f));
+    view = glm::translate(view, glm::vec3(-camera.pos.x, -camera.pos.y, 0.0f));
+    return view;
+}
+
+glm::mat4 App::getInvViewMatrix() {
+    glm::mat4 invView = glm::mat4(1.0f);
+    invView = glm::translate(invView, glm::vec3(camera.pos.x, camera.pos.y, 0.0f));
+    invView = glm::scale(invView, glm::vec3(1.0f / camera.zoom, -1.0f / camera.zoom, 1.0f));
+    invView = glm::translate(invView, glm::vec3(-currentWindowWidth / 2, -currentWindowHeight / 2, 0.0f));
+    return invView;
+}
+
+glm::dvec2 App::screenToWorld(int x, int y) {
+    glm::mat4 invView = getInvViewMatrix();
+    glm::dvec4 point = invView * glm::dvec4(x, currentWindowHeight - y, 0.0, 1.0);
+    glm::dvec2 result = glm::dvec2(point.x, point.y);
+    return result;
+}
+
+glm::dvec2 App::worldToScreen(double x, double y) {
+    glm::mat4 view = getViewMatrix();
+    glm::dvec4 point = view * glm::dvec4(x, y, 0.0, 1.0);
+    glm::dvec2 result = glm::dvec2(point.x, currentWindowHeight - point.y);
+    return result;
+}
+
+void App::processMouseLeftPress(int x, int y) {
+    glm::dvec2 worldPos = screenToWorld(x, y);
+    std::cout << std::format("Screen: ({}, {}) World: ({}, {})", x, y, worldPos.x, worldPos.y) << std::endl;
+}
+
+void App::processMouseRightPress(int x, int y) {
 }
 
 App::App() {

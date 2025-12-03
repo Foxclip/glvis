@@ -16,7 +16,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void scroll_callback(GLFWwindow* window, double x, double y);
 
 struct Camera {
-    glm::vec2 pos = glm::vec2(100.0f, 0.0f);
+    glm::dvec2 pos = glm::dvec2(0.0f, 100.0f);
     double zoom = 1.0f;
 };
 
@@ -35,14 +35,20 @@ private:
     int currentWindowWidth = DEFAULT_WINDOW_WIDTH;
     int currentWindowHeight = DEFAULT_WINDOW_HEIGHT;
     Camera camera;
-    int mouseLastX = 0;
-    int mouseLastY = 0;
+    int mouseX = 0;
+    int mouseY = 0;
     bool firstMouse = true;
     bool leftMousePressed = false;
     bool rightMousePressed = false;
 
     GLFWwindow* init();
     void mainLoop();
+    glm::mat4 getViewMatrix();
+    glm::mat4 getInvViewMatrix();
+    glm::dvec2 screenToWorld(int x, int y);
+    glm::dvec2 worldToScreen(double x, double y);
+    void processMouseLeftPress(int x, int y);
+    void processMouseRightPress(int x, int y);
 
 };
 
