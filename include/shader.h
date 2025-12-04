@@ -12,8 +12,7 @@ namespace glvis {
         FRAGMENT
     };
 
-    class Shader
-    {
+    class Shader {
     public:
         unsigned int ID;
     

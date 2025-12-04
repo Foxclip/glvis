@@ -11,11 +11,11 @@ namespace glvis {
 
     const int DEFAULT_WINDOW_WIDTH = 800;
     const int DEFAULT_WINDOW_HEIGHT = 600;
-    const double CAMERA_ZOOM_FACTOR = 1.2;
+    const float CAMERA_ZOOM_FACTOR = 1.2f;
 
     struct Camera {
-        glm::dvec2 pos = glm::dvec2(0.0f, 100.0f);
-        double zoom = 1.0f;
+        glm::vec2 pos = glm::vec2(0.0f, 100.0f);
+        float zoom = 1.0f;
     };
 
     class App {
@@ -31,8 +31,8 @@ namespace glvis {
         Camera camera;
         int mouseX = 0;
         int mouseY = 0;
-        double mouseXWorld = 0.0;
-        double mouseYWorld = 0.0;
+        float mouseXWorld = 0.0f;
+        float mouseYWorld = 0.0f;
         bool firstMouse = true;
         bool leftMousePressed = false;
         bool rightMousePressed = false;
@@ -45,8 +45,8 @@ namespace glvis {
         void mainLoop();
         glm::mat4 getViewMatrix();
         glm::mat4 getInvViewMatrix();
-        glm::dvec2 worldToScreen(double x, double y);
-        glm::dvec2 screenToWorld(int x, int y);
+        glm::vec2 worldToScreen(float x, float y);
+        glm::vec2 screenToWorld(int x, int y);
         static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
         static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);

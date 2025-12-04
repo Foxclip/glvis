@@ -5,7 +5,7 @@ Vector2::Vector2() {
     this->y = 0;
 }
 
-Vector2::Vector2(double x, double y) {
+Vector2::Vector2(float x, float y) {
     this->x = x;
     this->y = y;
 }

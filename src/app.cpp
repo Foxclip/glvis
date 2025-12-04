@@ -76,16 +76,16 @@ namespace glvis {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        std::unique_ptr<Rectangle> rect1 = std::make_unique<Rectangle>(100.0, 100.0);
-        rect1->setPosition(0.0, 200.0);
-        rect1->setRotation(glm::radians(45.0));
-        std::unique_ptr<Rectangle> rect2 = std::make_unique<Rectangle>(100.0, 100.0);
-        rect2->setPosition(200.0, 200.0);
-        rect2->setRotation(glm::radians(10.0));
+        std::unique_ptr<Rectangle> rect1 = std::make_unique<Rectangle>(100.0f, 100.0f);
+        rect1->setPosition(0.0f, 200.0f);
+        rect1->setRotation(glm::radians(45.0f));
+        std::unique_ptr<Rectangle> rect2 = std::make_unique<Rectangle>(100.0f, 100.0f);
+        rect2->setPosition(200.0f, 200.0f);
+        rect2->setRotation(glm::radians(10.0f));
         shapes.push_back(std::move(rect1));
         shapes.push_back(std::move(rect2));
 
-        screenRectangle = std::make_unique<Rectangle>(2.0, 2.0);
+        screenRectangle = std::make_unique<Rectangle>(2.0f, 2.0f);
 
         // screen FBO
         glGenFramebuffers(1, &screenFBO);
@@ -157,17 +157,17 @@ namespace glvis {
         return invView;
     }
 
-    glm::dvec2 App::worldToScreen(double x, double y) {
+    glm::vec2 App::worldToScreen(float x, float y) {
         glm::mat4 view = getViewMatrix();
-        glm::dvec4 point = view * glm::dvec4(x, y, 0.0, 1.0);
-        glm::dvec2 result = glm::dvec2(point.x, currentWindowHeight - point.y);
+        glm::vec4 point = view * glm::vec4(x, y, 0.0f, 1.0f);
+        glm::vec2 result = glm::vec2(point.x, currentWindowHeight - point.y);
         return result;
     }
 
-    glm::dvec2 App::screenToWorld(int x, int y) {
+    glm::vec2 App::screenToWorld(int x, int y) {
         glm::mat4 invView = getInvViewMatrix();
-        glm::dvec4 point = invView * glm::dvec4(x, currentWindowHeight - y, 0.0, 1.0);
-        glm::dvec2 result = glm::dvec2(point.x, point.y);
+        glm::vec4 point = invView * glm::vec4(x, currentWindowHeight - y, 0.0f, 1.0f);
+        glm::vec2 result = glm::vec2(point.x, point.y);
         return result;
     }
 
@@ -213,8 +213,8 @@ namespace glvis {
             mouseYWorld = screenToWorld(mouseX, mouseY).y;
             firstMouse = false;
         }
-        double xoffset = xpos - mouseX;
-        double yoffset = ypos - mouseY;
+        float xoffset = (float)xpos - mouseX;
+        float yoffset = (float)ypos - mouseY;
         if (rightMousePressed) {
             camera.pos.x -= xoffset / camera.zoom;
             camera.pos.y -= yoffset / camera.zoom;
@@ -240,14 +240,14 @@ namespace glvis {
     }
 
     void App::processMouseScroll(double x, double y) {
-        double zoomFactor = pow(CAMERA_ZOOM_FACTOR, y);
+        float zoomFactor = powf(CAMERA_ZOOM_FACTOR, (float)y);
         camera.zoom *= zoomFactor;
         camera.pos.x = (camera.pos.x - mouseXWorld) / zoomFactor + mouseXWorld;
         camera.pos.y = (camera.pos.y - mouseYWorld) / zoomFactor + mouseYWorld;
     }
 
     void App::processMouseLeftPress(int x, int y) {
-        glm::dvec2 worldPos = screenToWorld(x, y);
+        glm::vec2 worldPos = screenToWorld(x, y);
         std::cout << std::format("Screen: ({}, {}) World: ({}, {})", x, y, worldPos.x, worldPos.y) << std::endl;
     }
 
