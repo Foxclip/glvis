@@ -45,7 +45,7 @@ namespace glvis {
     void App::mainLoop() {
 
         Shader shader("shaders/simple.vert", "shaders/simple.frag");
-        Shader fboShader("shaders/fbo.vert", "shaders/fbo.frag");
+        Shader screenShader("shaders/fbo.vert", "shaders/fbo.frag");
 
         float triangleVertices[] = {
             // positions        // colors
@@ -70,16 +70,16 @@ namespace glvis {
         };
 
         // triangle
-        unsigned int VBO;
-        glGenBuffers(1, &VBO);
-        unsigned int VAO;
-        glGenVertexArrays(1, &VAO);
-        unsigned int EBO;
-        glGenBuffers(1, &EBO);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        unsigned int triangleVBO;
+        glGenBuffers(1, &triangleVBO);
+        unsigned int triangleVAO;
+        glGenVertexArrays(1, &triangleVAO);
+        unsigned int triangleEBO;
+        glGenBuffers(1, &triangleEBO);
+        glBindVertexArray(triangleVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triangleEBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangleIndices), triangleIndices, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
@@ -89,18 +89,18 @@ namespace glvis {
         glBindVertexArray(0);
 
         // screen FBO
-        unsigned int fbo;
-        glGenFramebuffers(1, &fbo);
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        unsigned int screenFBO;
+        glGenFramebuffers(1, &screenFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
 
         // VAO and VBO for screen quad
         unsigned int quadVBO;
         glGenBuffers(1, &quadVBO);
-        unsigned int quadVAO;
-        glGenVertexArrays(1, &quadVAO);
+        unsigned int screenQuadVAO;
+        glGenVertexArrays(1, &screenQuadVAO);
         unsigned int quadEBO;
         glGenBuffers(1, &quadEBO);
-        glBindVertexArray(quadVAO);
+        glBindVertexArray(screenQuadVAO);
         glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
@@ -113,18 +113,17 @@ namespace glvis {
         glBindVertexArray(0);
 
         // screen texture
-        unsigned int quadTexture;
-        glGenTextures(1, &quadTexture);
-        glBindTexture(GL_TEXTURE_2D, quadTexture);
+        glGenTextures(1, &screenQuadTexture);
+        glBindTexture(GL_TEXTURE_2D, screenQuadTexture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, quadTexture, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenQuadTexture, 0);
 
         while (!glfwWindowShouldClose(window)) {
 
-            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
             glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             glViewport(0, 0, currentWindowWidth, currentWindowHeight);
@@ -140,7 +139,7 @@ namespace glvis {
                 shader.setMat4("model", modelMatrix);
                 shader.setMat4("view", view);
                 shader.setMat4("projection", projection);
-                glBindVertexArray(VAO);
+                glBindVertexArray(triangleVAO);
                 glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
             }
 
@@ -158,9 +157,9 @@ namespace glvis {
             glViewport(0, 0, currentWindowWidth, currentWindowHeight);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            fboShader.use();
-            glBindTexture(GL_TEXTURE_2D, quadTexture);
-            glBindVertexArray(quadVAO);
+            screenShader.use();
+            glBindTexture(GL_TEXTURE_2D, screenQuadTexture);
+            glBindVertexArray(screenQuadVAO);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
             glfwSwapBuffers(window);
@@ -226,6 +225,11 @@ namespace glvis {
         currentWindowWidth = width;
         currentWindowHeight = height;
         glViewport(0, 0, width, height);
+
+        // resize screen texture
+        glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
+        resizeTexture(screenQuadTexture, width, height);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     void App::processMouse(double xpos, double ypos) {
@@ -275,6 +279,14 @@ namespace glvis {
     }
 
     void App::processMouseRightPress(int x, int y) {
+    }
+
+    void App::resizeTexture(GLuint textureId, int newWidth, int newHeight) {
+        glBindTexture(GL_TEXTURE_2D, textureId);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     App::App() {

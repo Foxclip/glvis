@@ -35,6 +35,8 @@ namespace glvis {
         bool firstMouse = true;
         bool leftMousePressed = false;
         bool rightMousePressed = false;
+        unsigned int screenFBO = 0;
+        unsigned int screenQuadTexture = 0;
 
         GLFWwindow* init();
         void mainLoop();
@@ -52,6 +54,7 @@ namespace glvis {
         void processMouseScroll(double x, double y);
         void processMouseLeftPress(int x, int y);
         void processMouseRightPress(int x, int y);
+        void resizeTexture(GLuint textureId, int newWidth, int newHeight);
 
     };
 
