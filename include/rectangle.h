@@ -3,19 +3,6 @@
 #include "vector.h"
 #include "shape.h"
 
-const float quadVertices[] = {
-    // positions        // texture Coords
-    -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-     1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-     1.0f, -1.0f, 0.0f, 1.0f, 0.0f
-};
-
-const unsigned int quadIndices[] = {
-    0, 1, 2,
-    2, 1, 3
-};
-
 namespace glvis {
 
     class Rectangle : public Shape {

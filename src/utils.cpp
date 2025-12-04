@@ -12,4 +12,12 @@ namespace glvis {
         return buffer.str();
     }
 
+    glm::vec2 to_glmVec2(const Vector2 & v) {
+        return glm::vec2(v.x, v.y);
+    }
+
+    glm::vec3 to_glmVec3(const Vector2 & v) {
+        return glm::vec3(v.x, v.y, 0.0f);
+    }
+
 }

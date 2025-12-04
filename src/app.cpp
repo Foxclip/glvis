@@ -76,7 +76,14 @@ namespace glvis {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        screenRectangle = std::make_unique<Rectangle>(1000.0, 1000.0);
+        std::unique_ptr<Rectangle> rect1 = std::make_unique<Rectangle>(100.0, 100.0);
+        rect1->setPosition(0.0, 200.0);
+        std::unique_ptr<Rectangle> rect2 = std::make_unique<Rectangle>(100.0, 100.0);
+        rect2->setPosition(200.0, 200.0);
+        shapes.push_back(std::move(rect1));
+        shapes.push_back(std::move(rect2));
+
+        screenRectangle = std::make_unique<Rectangle>(2.0, 2.0);
 
         // screen FBO
         glGenFramebuffers(1, &screenFBO);
@@ -102,23 +109,17 @@ namespace glvis {
             glm::mat4 projection = glm::mat4(1.0f);
             projection = glm::ortho(0.0f, (float)currentWindowWidth, 0.0f, (float)currentWindowHeight, -1.0f, 1.0f);
 
-            {
+            for (int i = 0; i < shapes.size(); i++) {
+                Shape* shape = shapes[i].get();
                 glm::mat4 modelMatrix = glm::mat4(1.0f);
-                modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
+                modelMatrix = glm::translate(modelMatrix, glm::vec3(shapes[i]->getPosition().x, shapes[i]->getPosition().y, 0.0f));
+                modelMatrix = glm::scale(modelMatrix, glm::vec3(shapes[i]->getScale().x, shapes[i]->getScale().y, 1.0f));
                 shader.use();
                 shader.setMat4("model", modelMatrix);
                 shader.setMat4("view", view);
                 shader.setMat4("projection", projection);
-                glBindVertexArray(triangleVAO);
-                glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-            }
-
-            {
-                glm::mat4 modelMatrix = glm::mat4(1.0f);
-                modelMatrix = glm::translate(modelMatrix, glm::vec3(200.0f, 0.0f, 0.0f));
-                modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f, 100.0f, 1.0f));
-                shader.setMat4("model", modelMatrix);
-                glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+                shader.setVec4("color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+                shape->render();
             }
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);

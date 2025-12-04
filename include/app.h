@@ -37,6 +37,7 @@ namespace glvis {
         bool leftMousePressed = false;
         bool rightMousePressed = false;
         std::unique_ptr<Rectangle> screenRectangle = nullptr;
+        std::vector<std::unique_ptr<Shape>> shapes;
         unsigned int screenFBO = 0;
         unsigned int screenQuadTexture = 0;
 

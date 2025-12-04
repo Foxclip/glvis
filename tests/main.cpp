@@ -11,5 +11,10 @@ int main() {
         std::cerr << e << std::endl;
     }
 
+    
     return 0;
+    
+    // TODO: shape rotation
+    // TODO: render textured rectangles
+    // TODO: Polygon shape
 }
