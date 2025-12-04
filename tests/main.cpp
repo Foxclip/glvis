@@ -14,7 +14,8 @@ int main() {
     
     return 0;
     
-    // TODO: shape rotation
+    // TODO: use different shaders
     // TODO: render textured rectangles
+    // TODO: pivot point
     // TODO: Polygon shape
 }

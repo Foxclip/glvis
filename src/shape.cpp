@@ -3,15 +3,19 @@
 namespace glvis {
 
     double Shape::getX() const {
-        return x;
+        return position.x;
     }
 
     double Shape::getY() const {
-        return y;
+        return position.y;
     }
 
     Vector2 Shape::getPosition() const {
-        return Vector2(x, y);
+        return position;
+    }
+
+    double Shape::getRotation() const {
+        return rotation;
     }
 
     const Vector2& Shape::getScale() const {
@@ -19,13 +23,24 @@ namespace glvis {
     }
 
     void Shape::setPosition(double x, double y) {
-        this->x = x;
-        this->y = y;
+        this->position.x = x;
+        this->position.y = y;
     }
 
     void Shape::setPosition(const Vector2& position) {
-        this->x = position.x;
-        this->y = position.y;
+        this->position = position;
     }
 
+    void Shape::setRotation(double rotation) {
+        this->rotation = rotation;
+    }
+
+    void Shape::setScale(double x, double y) {
+        this->scale.x = x;
+        this->scale.y = y;
+    }
+
+    void Shape::setScale(const Vector2& scale) {
+        this->scale = scale;
+    }
 }

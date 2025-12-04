@@ -78,8 +78,10 @@ namespace glvis {
 
         std::unique_ptr<Rectangle> rect1 = std::make_unique<Rectangle>(100.0, 100.0);
         rect1->setPosition(0.0, 200.0);
+        rect1->setRotation(glm::radians(45.0));
         std::unique_ptr<Rectangle> rect2 = std::make_unique<Rectangle>(100.0, 100.0);
         rect2->setPosition(200.0, 200.0);
+        rect2->setRotation(glm::radians(10.0));
         shapes.push_back(std::move(rect1));
         shapes.push_back(std::move(rect2));
 
@@ -113,6 +115,7 @@ namespace glvis {
                 Shape* shape = shapes[i].get();
                 glm::mat4 modelMatrix = glm::mat4(1.0f);
                 modelMatrix = glm::translate(modelMatrix, glm::vec3(shapes[i]->getPosition().x, shapes[i]->getPosition().y, 0.0f));
+                modelMatrix = glm::rotate(modelMatrix, (float)shapes[i]->getRotation(), glm::vec3(0.0f, 0.0f, -1.0f));
                 modelMatrix = glm::scale(modelMatrix, glm::vec3(shapes[i]->getScale().x, shapes[i]->getScale().y, 1.0f));
                 shader.use();
                 shader.setMat4("model", modelMatrix);
