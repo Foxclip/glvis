@@ -3,13 +3,17 @@
 namespace glvis {
 
     std::string file_to_str(const std::filesystem::path& path) {
-        if (!std::filesystem::exists(path)) {
-            throw std::format("File not found: {}", path.string());
+        try {
+            if (!std::filesystem::exists(path)) {
+                throw std::format("File not found: {}", path.string());
+            }
+            std::ifstream t(path);
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            return buffer.str();
+        } catch (std::exception& e) {
+            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }
-        std::ifstream t(path);
-        std::stringstream buffer;
-        buffer << t.rdbuf();
-        return buffer.str();
     }
 
     glm::vec2 to_glmVec2(const Vector2 & v) {

@@ -14,7 +14,7 @@ namespace glvis {
     const float CAMERA_ZOOM_FACTOR = 1.2f;
 
     struct Camera {
-        glm::vec2 pos = glm::vec2(0.0f, 100.0f);
+        glm::vec2 pos = glm::vec2(0.0f, 0.0f);
         float zoom = 1.0f;
     };
 
@@ -38,6 +38,8 @@ namespace glvis {
         bool rightMousePressed = false;
         std::unique_ptr<Rectangle> screenRectangle = nullptr;
         std::vector<std::unique_ptr<Shape>> shapes;
+        std::unique_ptr<Shader> defaultShaderUptr = nullptr;
+        std::unique_ptr<Shader> screenShaderUptr = nullptr;
         unsigned int screenFBO = 0;
         unsigned int screenQuadTexture = 0;
 

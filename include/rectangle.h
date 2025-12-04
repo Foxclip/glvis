@@ -11,7 +11,7 @@ namespace glvis {
         float getWidth() const;
         float getHeight() const;
         Vector2 getSize() const;
-        void render() const override;
+        void render(const glm::mat4& view, const glm::mat4& projection) const override;
 
     private:
         float width = 0.0f;

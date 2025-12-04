@@ -5,21 +5,25 @@
 namespace glvis {
 
     Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) {
-        unsigned int vertexShader = compileShader(VERTEX, vertexPath);
-        unsigned int fragmentShader = compileShader(FRAGMENT, fragmentPath);
-        ID = glCreateProgram();
-        glAttachShader(ID, vertexShader);
-        glAttachShader(ID, fragmentShader);
-        glLinkProgram(ID);
-        int success;
-        glGetProgramiv(ID, GL_LINK_STATUS, &success);
-        if (!success) {
-            char infoLog[8192];
-            glGetProgramInfoLog(ID, 8192, NULL, infoLog);
-            throw std::format("ERROR::SHADER::PROGRAM::LINKING_FAILED\n{}", infoLog);
+        try {
+            unsigned int vertexShader = compileShader(VERTEX, vertexPath);
+            unsigned int fragmentShader = compileShader(FRAGMENT, fragmentPath);
+            ID = glCreateProgram();
+            glAttachShader(ID, vertexShader);
+            glAttachShader(ID, fragmentShader);
+            glLinkProgram(ID);
+            int success;
+            glGetProgramiv(ID, GL_LINK_STATUS, &success);
+            if (!success) {
+                char infoLog[8192];
+                glGetProgramInfoLog(ID, 8192, NULL, infoLog);
+                throw std::format("Linking failed\n{}", infoLog);
+            }
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
+        } catch (std::exception& e) {
+            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
     }
 
     void Shader::use() {
@@ -51,20 +55,24 @@ namespace glvis {
     }
 
     int Shader::compileShader(ShaderType type, const std::string& path) {
-        std::string source = file_to_str(path);
-        const char* sourceCstr = source.c_str();
-        unsigned int shader = glCreateShader(type == VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
-        glShaderSource(shader, 1, &sourceCstr, NULL);
-        glCompileShader(shader);
-        int success;
-        char infoLog[8192];
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if (!success) {
-            glGetShaderInfoLog(shader, 8192, NULL, infoLog);
-            std::string typeStr = type == VERTEX ? "VERTEX" : "FRAGMENT";
-            throw std::format("ERROR::SHADER::{}::COMPILATION_FAILED: {}\n{}", typeStr, path, infoLog);
+        try {
+            std::string source = file_to_str(path);
+            const char* sourceCstr = source.c_str();
+            unsigned int shader = glCreateShader(type == VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
+            glShaderSource(shader, 1, &sourceCstr, NULL);
+            glCompileShader(shader);
+            int success;
+            char infoLog[8192];
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+            if (!success) {
+                glGetShaderInfoLog(shader, 8192, NULL, infoLog);
+                std::string typeStr = type == VERTEX ? "Vertex" : "Fragment";
+                throw std::format("{} shader compilation failed: {}\n{}", typeStr, path, infoLog);
+            }
+            return shader;
+        } catch (std::exception& e) {
+            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }
-        return shader;
     }
 
 }

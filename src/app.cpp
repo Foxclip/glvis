@@ -3,6 +3,7 @@
 #include "app.h"
 #include "utils.h"
 #include "shader.h"
+#include "common.h"
 
 namespace glvis {
 
@@ -39,53 +40,12 @@ namespace glvis {
         glfwSetMouseButtonCallback(window, mouse_button_callback);
         glfwSetScrollCallback(window, scroll_callback);
 
-        return window;
-    }
-
-    void App::mainLoop() {
-
-        Shader shader("shaders/simple.vert", "shaders/simple.frag");
-        Shader screenShader("shaders/fbo.vert", "shaders/fbo.frag");
-
-        float triangleVertices[] = {
-            // positions        // colors
-            0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-            0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f
-        };
-        unsigned int triangleIndices[] = {
-            0, 1, 2,
-        };
-
-        // triangle
-        unsigned int triangleVBO;
-        glGenBuffers(1, &triangleVBO);
-        unsigned int triangleVAO;
-        glGenVertexArrays(1, &triangleVAO);
-        unsigned int triangleEBO;
-        glGenBuffers(1, &triangleEBO);
-        glBindVertexArray(triangleVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triangleEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangleIndices), triangleIndices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-        std::unique_ptr<Rectangle> rect1 = std::make_unique<Rectangle>(100.0f, 100.0f);
-        rect1->setPosition(0.0f, 200.0f);
-        rect1->setRotation(glm::radians(45.0f));
-        std::unique_ptr<Rectangle> rect2 = std::make_unique<Rectangle>(100.0f, 100.0f);
-        rect2->setPosition(200.0f, 200.0f);
-        rect2->setRotation(glm::radians(10.0f));
-        shapes.push_back(std::move(rect1));
-        shapes.push_back(std::move(rect2));
+        defaultShaderUptr = std::make_unique<Shader>("shaders/simple.vert", "shaders/simple.frag");
+        common::defaultShader = defaultShaderUptr.get();
+        screenShaderUptr = std::make_unique<Shader>("shaders/fbo.vert", "shaders/fbo.frag");
 
         screenRectangle = std::make_unique<Rectangle>(2.0f, 2.0f);
+        screenRectangle->setShader(screenShaderUptr.get());
 
         // screen FBO
         glGenFramebuffers(1, &screenFBO);
@@ -100,6 +60,20 @@ namespace glvis {
         glBindTexture(GL_TEXTURE_2D, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenQuadTexture, 0);
 
+        return window;
+    }
+
+    void App::mainLoop() {
+
+        std::unique_ptr<Rectangle> rect1 = std::make_unique<Rectangle>(100.0f, 100.0f);
+        rect1->setPosition(0.0f, 0.0f);
+        rect1->setRotation(glm::radians(45.0f));
+        std::unique_ptr<Rectangle> rect2 = std::make_unique<Rectangle>(100.0f, 100.0f);
+        rect2->setPosition(200.0f, 0.0f);
+        rect2->setRotation(glm::radians(10.0f));
+        shapes.push_back(std::move(rect1));
+        shapes.push_back(std::move(rect2));
+
         while (!glfwWindowShouldClose(window)) {
 
             glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
@@ -113,16 +87,7 @@ namespace glvis {
 
             for (int i = 0; i < shapes.size(); i++) {
                 Shape* shape = shapes[i].get();
-                glm::mat4 modelMatrix = glm::mat4(1.0f);
-                modelMatrix = glm::translate(modelMatrix, glm::vec3(shapes[i]->getPosition().x, shapes[i]->getPosition().y, 0.0f));
-                modelMatrix = glm::rotate(modelMatrix, (float)shapes[i]->getRotation(), glm::vec3(0.0f, 0.0f, -1.0f));
-                modelMatrix = glm::scale(modelMatrix, glm::vec3(shapes[i]->getScale().x, shapes[i]->getScale().y, 1.0f));
-                shader.use();
-                shader.setMat4("model", modelMatrix);
-                shader.setMat4("view", view);
-                shader.setMat4("projection", projection);
-                shader.setVec4("color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-                shape->render();
+                shape->render(view, projection);
             }
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -131,10 +96,9 @@ namespace glvis {
             glViewport(0, 0, currentWindowWidth, currentWindowHeight);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            screenShader.use();
             glBindTexture(GL_TEXTURE_2D, screenQuadTexture);
-            screenShader.setInt("screenTexture", 0);
-            screenRectangle->render();
+            screenShaderUptr->setInt("screenTexture", 0);
+            screenRectangle->render(view, projection);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -263,11 +227,15 @@ namespace glvis {
     }
 
     App::App() {
-        window = init();
-        if (!window) {
-            throw std::runtime_error("Failed to initialize GLFW window");
+        try {
+            window = init();
+            if (!window) {
+                throw std::runtime_error("Failed to initialize GLFW window");
+            }
+            mainLoop();
+        } catch (std::exception& e) {
+            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }
-        mainLoop();
     }
 
     App::~App() {

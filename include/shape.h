@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vector.h"
+#include "shader.h"
 
 namespace glvis {
 
@@ -16,9 +17,11 @@ namespace glvis {
         void setRotation(float rotation);
         void setScale(float x, float y);
         void setScale(const Vector2& scale);
-        virtual void render() const = 0;
+        void setShader(Shader* shader);
+        virtual void render(const glm::mat4& view, const glm::mat4& projection) const = 0;
 
     protected:
+        Shader* shader = nullptr;
         Vector2 position;
         float rotation = 0.0f;
         Vector2 scale = Vector2(1.0f, 1.0f);

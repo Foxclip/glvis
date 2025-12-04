@@ -1,12 +1,15 @@
+#include <stdexcept>
 #include "rectangle.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "common.h"
 
 namespace glvis {
 
     Rectangle::Rectangle(float width, float height) {
         this->width = width;
         this->height = height;
+        this->shader = common::defaultShader;
 
         const float quadVertices[] = {
             // positions                 // texture Coords
@@ -49,8 +52,22 @@ namespace glvis {
         return Vector2(width, height);
     }
 
-    void Rectangle::render() const {
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    void Rectangle::render(const glm::mat4& view, const glm::mat4& projection) const {
+        try {
+            if (shader == nullptr) throw std::runtime_error("Shader not set");
+            glm::mat4 modelMatrix = glm::mat4(1.0f);
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(position.x, position.y, 0.0f));
+            modelMatrix = glm::rotate(modelMatrix, rotation, glm::vec3(0.0f, 0.0f, -1.0f));
+            modelMatrix = glm::scale(modelMatrix, glm::vec3(scale.x, scale.y, 1.0f));
+            shader->use();
+            shader->setMat4("model", modelMatrix);
+            shader->setMat4("view", view);
+            shader->setMat4("projection", projection);
+            shader->setVec4("color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            glBindVertexArray(VAO);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        } catch (std::exception& e) {
+            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
+        }
     }
 }

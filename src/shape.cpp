@@ -43,4 +43,8 @@ namespace glvis {
     void Shape::setScale(const Vector2& scale) {
         this->scale = scale;
     }
+    
+    void Shape::setShader(Shader* shader) {
+        this->shader = shader;
+    }
 }
