@@ -52,13 +52,8 @@ namespace glvis {
         glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
 
         // screen texture
-        glGenTextures(1, &screenQuadTexture);
-        glBindTexture(GL_TEXTURE_2D, screenQuadTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenQuadTexture, 0);
+        screenTextureUptr = std::make_unique<Texture>(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTextureUptr->getID(), 0);
 
         return window;
     }
@@ -96,7 +91,7 @@ namespace glvis {
             glViewport(0, 0, currentWindowWidth, currentWindowHeight);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            glBindTexture(GL_TEXTURE_2D, screenQuadTexture);
+            screenTextureUptr->bind();
             screenShaderUptr->setInt("screenTexture", 0);
             screenRectangle->render(view, projection);
 
@@ -165,7 +160,7 @@ namespace glvis {
 
         // resize screen texture
         glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
-        resizeTexture(screenQuadTexture, width, height);
+        resizeTexture(screenTextureUptr->getID(), width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 

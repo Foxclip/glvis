@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "rectangle.h"
+#include "texture.h"
 
 namespace glvis {
 
@@ -41,7 +42,7 @@ namespace glvis {
         std::unique_ptr<Shader> defaultShaderUptr = nullptr;
         std::unique_ptr<Shader> screenShaderUptr = nullptr;
         unsigned int screenFBO = 0;
-        unsigned int screenQuadTexture = 0;
+        std::unique_ptr<Texture> screenTextureUptr = nullptr;
 
         GLFWwindow* init();
         void mainLoop();
