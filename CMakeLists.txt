@@ -22,8 +22,10 @@ set(SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 
 target_sources(${PROJECT_NAME} PRIVATE
     ${SRC_DIR}/app.cpp
+    ${SRC_DIR}/rectangle.cpp
     ${SRC_DIR}/shader.cpp
     ${SRC_DIR}/utils.cpp
+    ${SRC_DIR}/vector.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${INCLUDE_DIR}

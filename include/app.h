@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "rectangle.h"
 
 namespace glvis {
 
@@ -35,6 +36,7 @@ namespace glvis {
         bool firstMouse = true;
         bool leftMousePressed = false;
         bool rightMousePressed = false;
+        std::unique_ptr<Rectangle> screenRectangle = nullptr;
         unsigned int screenFBO = 0;
         unsigned int screenQuadTexture = 0;
 

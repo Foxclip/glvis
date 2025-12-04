@@ -57,18 +57,6 @@ namespace glvis {
             0, 1, 2,
         };
 
-        float quadVertices[] = {
-            // positions        // texture Coords
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-            1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 0.0f, 1.0f, 0.0f
-        };
-        unsigned int quadIndices[] = {
-            0, 1, 2,
-            2, 1, 3
-        };
-
         // triangle
         unsigned int triangleVBO;
         glGenBuffers(1, &triangleVBO);
@@ -88,29 +76,11 @@ namespace glvis {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
+        screenRectangle = std::make_unique<Rectangle>(1000.0, 1000.0);
+
         // screen FBO
-        unsigned int screenFBO;
         glGenFramebuffers(1, &screenFBO);
         glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
-
-        // VAO and VBO for screen quad
-        unsigned int quadVBO;
-        glGenBuffers(1, &quadVBO);
-        unsigned int screenQuadVAO;
-        glGenVertexArrays(1, &screenQuadVAO);
-        unsigned int quadEBO;
-        glGenBuffers(1, &quadEBO);
-        glBindVertexArray(screenQuadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndices), quadIndices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
 
         // screen texture
         glGenTextures(1, &screenQuadTexture);
@@ -159,8 +129,8 @@ namespace glvis {
             glClear(GL_COLOR_BUFFER_BIT);
             screenShader.use();
             glBindTexture(GL_TEXTURE_2D, screenQuadTexture);
-            glBindVertexArray(screenQuadVAO);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            screenShader.setInt("screenTexture", 0);
+            screenRectangle->render();
 
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -224,7 +194,6 @@ namespace glvis {
     void App::processWindowSize(int width, int height) {
         currentWindowWidth = width;
         currentWindowHeight = height;
-        glViewport(0, 0, width, height);
 
         // resize screen texture
         glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
