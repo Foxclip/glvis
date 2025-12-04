@@ -44,9 +44,6 @@ namespace glvis {
         common::defaultShader = defaultShaderUptr.get();
         screenShaderUptr = std::make_unique<Shader>("shaders/fbo.vert", "shaders/fbo.frag");
 
-        screenRectangle = std::make_unique<Rectangle>(2.0f, 2.0f);
-        screenRectangle->setShader(screenShaderUptr.get());
-
         // screen FBO
         glGenFramebuffers(1, &screenFBO);
         glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
@@ -54,6 +51,10 @@ namespace glvis {
         // screen texture
         screenTextureUptr = std::make_unique<Texture>(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTextureUptr->getID(), 0);
+
+        screenRectangle = std::make_unique<Rectangle>(2.0f, 2.0f);
+        screenRectangle->setShader(screenShaderUptr.get());
+        screenRectangle->setTexture(screenTextureUptr.get());
 
         return window;
     }
@@ -91,8 +92,6 @@ namespace glvis {
             glViewport(0, 0, currentWindowWidth, currentWindowHeight);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-            screenTextureUptr->bind();
-            screenShaderUptr->setInt("screenTexture", 0);
             screenRectangle->render(view, projection);
 
             glfwSwapBuffers(window);

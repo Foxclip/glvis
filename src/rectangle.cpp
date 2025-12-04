@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "common.h"
+#include "texture.h"
 
 namespace glvis {
 
@@ -52,6 +53,10 @@ namespace glvis {
         return Vector2(width, height);
     }
 
+    void Rectangle::setTexture(Texture* texture) {
+        this->texture = texture;
+    }
+
     void Rectangle::render(const glm::mat4& view, const glm::mat4& projection) const {
         try {
             if (shader == nullptr) throw std::runtime_error("Shader not set");
@@ -64,6 +69,14 @@ namespace glvis {
             shader->setMat4("view", view);
             shader->setMat4("projection", projection);
             shader->setVec4("color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            if (texture) {
+                shader->setInt("tex", 0);
+                shader->setBool("hasTexture", true);
+                texture->bind();
+            } else {
+                shader->setInt("tex", -1);
+                shader->setBool("hasTexture", false);
+            }
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         } catch (std::exception& e) {

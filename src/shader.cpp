@@ -67,7 +67,7 @@ namespace glvis {
             if (!success) {
                 glGetShaderInfoLog(shader, 8192, NULL, infoLog);
                 std::string typeStr = type == VERTEX ? "Vertex" : "Fragment";
-                throw std::format("{} shader compilation failed: {}\n{}", typeStr, path, infoLog);
+                throw std::runtime_error(std::format("{} shader compilation failed: {}\n{}", typeStr, path, infoLog));
             }
             return shader;
         } catch (std::exception& e) {
