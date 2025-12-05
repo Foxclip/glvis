@@ -59,7 +59,7 @@ namespace glvis {
         return Vector2(width, height);
     }
 
-    void Rectangle::setTexture(Texture* texture) {
+    void Rectangle::setTexture(AbstractTexture* texture) {
         this->texture = texture;
     }
 

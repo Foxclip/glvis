@@ -5,7 +5,7 @@
 
 namespace glvis {
     
-    class Texture;
+    class AbstractTexture;
 
     class Rectangle : public Shape {
     public:
@@ -14,11 +14,11 @@ namespace glvis {
         float getWidth() const;
         float getHeight() const;
         Vector2 getSize() const;
-        void setTexture(Texture* texture);
+        void setTexture(AbstractTexture* texture);
         void render(const glm::mat4& view, const glm::mat4& projection) const override;
 
     private:
-        Texture* texture = nullptr;
+        AbstractTexture* texture = nullptr;
         float width = 0.0f;
         float height = 0.0f;
         unsigned int VAO = 0;

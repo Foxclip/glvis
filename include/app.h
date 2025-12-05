@@ -8,6 +8,7 @@
 #include <map>
 #include "rectangle.h"
 #include "texture.h"
+#include "render_texture.h"
 
 namespace glvis {
 
@@ -47,8 +48,7 @@ namespace glvis {
         std::vector<std::unique_ptr<Shape>> shapes;
         std::unique_ptr<Shader> defaultShaderUptr = nullptr;
         std::unique_ptr<Shader> screenShaderUptr = nullptr;
-        unsigned int screenFBO = 0;
-        std::unique_ptr<Texture> screenTextureUptr = nullptr;
+        std::unique_ptr<RenderTexture> screenTextureUptr = nullptr;
         std::map<std::string, std::unique_ptr<Texture>> textures;
 
         GLFWwindow* init();
@@ -67,7 +67,6 @@ namespace glvis {
         void processMouseScroll(double x, double y);
         void processMouseLeftPress(int x, int y);
         void processMouseRightPress(int x, int y);
-        void resizeTexture(GLuint textureId, int newWidth, int newHeight);
 
     };
 

@@ -43,14 +43,8 @@ namespace glvis {
         defaultShaderUptr = std::make_unique<Shader>("shaders/simple.vert", "shaders/simple.frag");
         common::defaultShader = defaultShaderUptr.get();
         screenShaderUptr = std::make_unique<Shader>("shaders/fbo.vert", "shaders/fbo.frag");
-
-        // screen FBO
-        glGenFramebuffers(1, &screenFBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
-
-        // screen texture
-        screenTextureUptr = std::make_unique<Texture>(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTextureUptr->getID(), 0);
+        
+        screenTextureUptr = std::make_unique<RenderTexture>(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
         screenRectangle = std::make_unique<Rectangle>(2.0f, 2.0f);
         screenRectangle->setShader(screenShaderUptr.get());
@@ -63,7 +57,7 @@ namespace glvis {
 
         while (!glfwWindowShouldClose(window)) {
 
-            glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, screenTextureUptr->getFBO());
             glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             glViewport(0, 0, currentWindowWidth, currentWindowHeight);
@@ -147,11 +141,7 @@ namespace glvis {
     void App::processWindowSize(int width, int height) {
         currentWindowWidth = width;
         currentWindowHeight = height;
-
-        // resize screen texture
-        glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
-        resizeTexture(screenTextureUptr->getID(), width, height);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        screenTextureUptr->resize(width, height);
     }
 
     void App::processMouse(double xpos, double ypos) {
@@ -201,14 +191,6 @@ namespace glvis {
     }
 
     void App::processMouseRightPress(int x, int y) {
-    }
-
-    void App::resizeTexture(GLuint textureId, int newWidth, int newHeight) {
-        glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     App::App() {
