@@ -24,6 +24,9 @@ namespace glvis {
     public:
         App();
         ~App();
+        void start();
+        Texture* addTexture(const std::filesystem::path& path);
+        Rectangle* addRectangle(float width, float height);
 
     private:
         GLFWwindow* window = nullptr;
@@ -43,6 +46,7 @@ namespace glvis {
         std::unique_ptr<Shader> screenShaderUptr = nullptr;
         unsigned int screenFBO = 0;
         std::unique_ptr<Texture> screenTextureUptr = nullptr;
+        std::vector<std::unique_ptr<Texture>> textures;
 
         GLFWwindow* init();
         void mainLoop();

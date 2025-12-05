@@ -61,15 +61,6 @@ namespace glvis {
 
     void App::mainLoop() {
 
-        std::unique_ptr<Rectangle> rect1 = std::make_unique<Rectangle>(100.0f, 100.0f);
-        rect1->setPosition(0.0f, 0.0f);
-        rect1->setRotation(glm::radians(45.0f));
-        std::unique_ptr<Rectangle> rect2 = std::make_unique<Rectangle>(100.0f, 100.0f);
-        rect2->setPosition(200.0f, 0.0f);
-        rect2->setRotation(glm::radians(10.0f));
-        shapes.push_back(std::move(rect1));
-        shapes.push_back(std::move(rect2));
-
         while (!glfwWindowShouldClose(window)) {
 
             glBindFramebuffer(GL_FRAMEBUFFER, screenFBO);
@@ -226,7 +217,6 @@ namespace glvis {
             if (!window) {
                 throw std::runtime_error("Failed to initialize GLFW window");
             }
-            mainLoop();
         } catch (std::exception& e) {
             throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }
@@ -237,4 +227,25 @@ namespace glvis {
         glfwTerminate();
     }
 
+    void App::start() {
+        try {
+            mainLoop();
+        } catch (std::exception& e) {
+            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
+        }
+    }
+
+    Texture* App::addTexture(const std::filesystem::path &path) {
+        std::unique_ptr<Texture> texture = std::make_unique<Texture>(path);
+        Texture* texturePtr = texture.get();
+        textures.push_back(std::move(texture));
+        return texturePtr;
+    }
+
+    Rectangle* App::addRectangle(float width, float height) {
+        std::unique_ptr<Rectangle> rect = std::make_unique<Rectangle>(width, height);
+        Rectangle* rectPtr = rect.get();
+        shapes.push_back(std::move(rect));
+        return rectPtr;
+    }
 }

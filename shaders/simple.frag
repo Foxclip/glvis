@@ -1,6 +1,6 @@
 #version 330 core
 
-in vec3 vertexColor;
+in vec2 TexCoords;
 
 out vec4 FragColor;
 
@@ -10,7 +10,7 @@ uniform bool hasTexture;
   
 void main() {
     if (hasTexture) {
-        FragColor = texture(tex, gl_FragCoord.xy);
+        FragColor = texture(tex, TexCoords);
     } else {
         FragColor = vec4(color);
     }
