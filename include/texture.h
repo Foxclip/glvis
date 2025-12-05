@@ -8,6 +8,7 @@ namespace glvis {
     public:
         Texture(int width, int height);
         Texture(const std::filesystem::path& path);
+        ~Texture();
         unsigned int getID() const;
         const std::filesystem::path& getPath() const;
         int getWidth() const;

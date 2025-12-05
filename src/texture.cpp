@@ -34,6 +34,10 @@ namespace glvis {
         }
     }
 
+    Texture::~Texture() {
+        glDeleteTextures(1, &ID);
+    }
+
     unsigned int Texture::getID() const {
         return ID;
     }
