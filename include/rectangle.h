@@ -10,6 +10,7 @@ namespace glvis {
     class Rectangle : public Shape {
     public:
         Rectangle(float width, float height);
+        ~Rectangle();
         float getWidth() const;
         float getHeight() const;
         Vector2 getSize() const;

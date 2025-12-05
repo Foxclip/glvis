@@ -41,6 +41,12 @@ namespace glvis {
         glBindVertexArray(0);
     }
 
+    Rectangle::~Rectangle() {
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &EBO);
+    }
+
     float Rectangle::getWidth() const {
         return width;
     }
