@@ -38,6 +38,10 @@ namespace glvis {
         return ID;
     }
 
+    const std::filesystem::path& Texture::getPath() const {
+        return path;
+    }
+
     int Texture::getWidth() const {
         return width;
     }

@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <map>
 #include "rectangle.h"
 #include "texture.h"
 
@@ -26,6 +27,8 @@ namespace glvis {
         ~App();
         void start();
         Texture* addTexture(const std::filesystem::path& path);
+        void removeTexture(Texture* texture);
+        void removeTexture(const std::filesystem::path& path);
         Rectangle* addRectangle(float width, float height);
 
     private:
@@ -46,7 +49,7 @@ namespace glvis {
         std::unique_ptr<Shader> screenShaderUptr = nullptr;
         unsigned int screenFBO = 0;
         std::unique_ptr<Texture> screenTextureUptr = nullptr;
-        std::vector<std::unique_ptr<Texture>> textures;
+        std::map<std::string, std::unique_ptr<Texture>> textures;
 
         GLFWwindow* init();
         void mainLoop();

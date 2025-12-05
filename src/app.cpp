@@ -235,11 +235,22 @@ namespace glvis {
         }
     }
 
-    Texture* App::addTexture(const std::filesystem::path &path) {
+    Texture* App::addTexture(const std::filesystem::path& path) {
         std::unique_ptr<Texture> texture = std::make_unique<Texture>(path);
         Texture* texturePtr = texture.get();
-        textures.push_back(std::move(texture));
+        textures.emplace(path.string(), std::move(texture));
         return texturePtr;
+    }
+
+    void App::removeTexture(Texture* texture) {
+        auto it = textures.find(texture->getPath().string());
+        if (it != textures.end()) {
+            textures.erase(it);
+        }
+    }
+
+    void App::removeTexture(const std::filesystem::path& path) {
+        textures.erase(path.string());
     }
 
     Rectangle* App::addRectangle(float width, float height) {
