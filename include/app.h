@@ -12,8 +12,6 @@
 
 namespace glvis {
 
-    const int DEFAULT_WINDOW_WIDTH = 800;
-    const int DEFAULT_WINDOW_HEIGHT = 600;
     const float CAMERA_ZOOM_FACTOR = 1.2f;
 
     class Camera {
@@ -31,7 +29,7 @@ namespace glvis {
     class App {
 
     public:
-        App();
+        App(int width, int height);
         ~App();
         Camera& getCamera();
         void start();
@@ -42,8 +40,8 @@ namespace glvis {
 
     private:
         GLFWwindow* window = nullptr;
-        int currentWindowWidth = DEFAULT_WINDOW_WIDTH;
-        int currentWindowHeight = DEFAULT_WINDOW_HEIGHT;
+        int currentWindowWidth = 0;
+        int currentWindowHeight = 0;
         Camera camera;
         int mouseX = 0;
         int mouseY = 0;
@@ -59,7 +57,7 @@ namespace glvis {
         std::unique_ptr<RenderTexture> screenTextureUptr = nullptr;
         std::map<std::string, std::unique_ptr<Texture>> textures;
 
-        GLFWwindow* init();
+        GLFWwindow* init(int width, int height);
         void mainLoop();
         glm::mat4 getViewMatrix();
         glm::mat4 getInvViewMatrix();

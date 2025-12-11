@@ -23,7 +23,72 @@ namespace glvis {
         this->zoom = zoom;
     }
 
-    GLFWwindow* App::init() {
+    App::App(int width, int height) {
+        try {
+            window = init(width, height);
+            if (!window) {
+                throw std::runtime_error("Failed to initialize GLFW window");
+            }
+        } catch (std::exception& e) {
+            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
+        }
+    }
+
+    App::~App() {
+
+        screenRectangle.reset();
+        shapes.clear();
+        screenShaderUptr.reset();
+        defaultShaderUptr.reset();
+        screenTextureUptr.reset();
+        textures.clear();
+
+        if (window) {
+            glfwDestroyWindow(window);
+            window = nullptr;
+        }
+        glfwTerminate();
+
+    }
+
+        Camera& App::getCamera() {
+        return camera;
+    }
+
+    void App::start() {
+        try {
+            mainLoop();
+        } catch (std::exception& e) {
+            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
+        }
+    }
+
+    Texture* App::addTexture(const std::filesystem::path& path) {
+        std::unique_ptr<Texture> texture = std::make_unique<Texture>(path);
+        Texture* texturePtr = texture.get();
+        textures.emplace(path.string(), std::move(texture));
+        return texturePtr;
+    }
+
+    void App::removeTexture(Texture* texture) {
+        auto it = textures.find(texture->getPath().string());
+        if (it != textures.end()) {
+            textures.erase(it);
+        }
+    }
+
+    void App::removeTexture(const std::filesystem::path& path) {
+        textures.erase(path.string());
+    }
+
+    Rectangle* App::addRectangle(float width, float height) {
+        std::unique_ptr<Rectangle> rect = std::make_unique<Rectangle>(width, height);
+        Rectangle* rectPtr = rect.get();
+        shapes.push_back(std::move(rect));
+        return rectPtr;
+    }
+
+    GLFWwindow* App::init(int width, int height) {
         if (!glfwInit()) {
             std::cerr << "Failed to initialize GLFW" << std::endl;
             return nullptr;
@@ -41,6 +106,9 @@ namespace glvis {
         }
 
         glfwMakeContextCurrent(window);
+
+        currentWindowWidth = width;
+        currentWindowHeight = height;
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cerr << "Failed to initialize GLAD" << std::endl;
@@ -64,7 +132,7 @@ namespace glvis {
         common::defaultShader = defaultShaderUptr.get();
         screenShaderUptr = std::make_unique<Shader>("shaders/fbo.vert", "shaders/fbo.frag");
         
-        screenTextureUptr = std::make_unique<RenderTexture>(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+        screenTextureUptr = std::make_unique<RenderTexture>(width, height);
 
         screenRectangle = std::make_unique<Rectangle>(2.0f, 2.0f);
         screenRectangle->setShader(screenShaderUptr.get());
@@ -215,71 +283,6 @@ namespace glvis {
     }
 
     void App::processMouseRightPress(int x, int y) {
-    }
-
-    App::App() {
-        try {
-            window = init();
-            if (!window) {
-                throw std::runtime_error("Failed to initialize GLFW window");
-            }
-        } catch (std::exception& e) {
-            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
-        }
-    }
-
-    App::~App() {
-
-        screenRectangle.reset();
-        shapes.clear();
-        screenShaderUptr.reset();
-        defaultShaderUptr.reset();
-        screenTextureUptr.reset();
-        textures.clear();
-
-        if (window) {
-            glfwDestroyWindow(window);
-            window = nullptr;
-        }
-        glfwTerminate();
-
-    }
-
-    Camera& App::getCamera() {
-        return camera;
-    }
-
-    void App::start() {
-        try {
-            mainLoop();
-        } catch (std::exception& e) {
-            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
-        }
-    }
-
-    Texture* App::addTexture(const std::filesystem::path& path) {
-        std::unique_ptr<Texture> texture = std::make_unique<Texture>(path);
-        Texture* texturePtr = texture.get();
-        textures.emplace(path.string(), std::move(texture));
-        return texturePtr;
-    }
-
-    void App::removeTexture(Texture* texture) {
-        auto it = textures.find(texture->getPath().string());
-        if (it != textures.end()) {
-            textures.erase(it);
-        }
-    }
-
-    void App::removeTexture(const std::filesystem::path& path) {
-        textures.erase(path.string());
-    }
-
-    Rectangle* App::addRectangle(float width, float height) {
-        std::unique_ptr<Rectangle> rect = std::make_unique<Rectangle>(width, height);
-        Rectangle* rectPtr = rect.get();
-        shapes.push_back(std::move(rect));
-        return rectPtr;
     }
 
 }

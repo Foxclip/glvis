@@ -5,7 +5,7 @@ int main() {
 
     try {
 
-        glvis::App app;
+        glvis::App app(800, 600);
 
         app.getCamera().setPosition(glm::vec2(400.0f, 300.0f));
 
@@ -31,7 +31,6 @@ int main() {
     
     return 0;
     
-    // TODO: width and height in App constructor
     // TODO: Polygon shape
     // TODO: line drawing
 }
