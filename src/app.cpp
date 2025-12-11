@@ -130,7 +130,7 @@ namespace glvis {
 
         defaultShaderUptr = std::make_unique<Shader>("shaders/simple.vert", "shaders/simple.frag");
         common::defaultShader = defaultShaderUptr.get();
-        screenShaderUptr = std::make_unique<Shader>("shaders/fbo.vert", "shaders/fbo.frag");
+        screenShaderUptr = std::make_unique<Shader>("shaders/screen.vert", "shaders/screen.frag");
         
         screenTextureUptr = std::make_unique<RenderTexture>(width, height);
 

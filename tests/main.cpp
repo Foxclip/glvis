@@ -31,6 +31,8 @@ int main() {
     
     return 0;
     
-    // TODO: Polygon shape
+    // TODO: Circle shape
     // TODO: line drawing
+    // TODO: text rendering
+    // TODO: transparent texture rendering
 }
