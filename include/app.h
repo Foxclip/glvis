@@ -61,6 +61,8 @@ namespace glvis {
         static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
         static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
         static void scroll_callback(GLFWwindow* window, double x, double y);
+        static void glad_pre_callback(const char* name, void* funcptr, int len_args, ...);
+        static void glad_post_callback(const char* name, void* funcptr, int len_args, ...);
         void processWindowSize(int width, int height);
         void processMouse(double xpos, double ypos);
         void processMousePress(int button, int action, int mods);

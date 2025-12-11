@@ -39,6 +39,10 @@ namespace glvis {
         glfwSetCursorPosCallback(window, mouse_callback);  
         glfwSetMouseButtonCallback(window, mouse_button_callback);
         glfwSetScrollCallback(window, scroll_callback);
+#ifndef NDEBUG
+        glad_set_pre_callback(glad_pre_callback);
+        glad_set_post_callback(glad_post_callback);
+#endif
 
         defaultShaderUptr = std::make_unique<Shader>("shaders/simple.vert", "shaders/simple.frag");
         common::defaultShader = defaultShaderUptr.get();
@@ -138,6 +142,10 @@ namespace glvis {
         }
     }
 
+    void App::glad_pre_callback(const char* name, void *funcptr, int len_args, ...) { }
+
+    void App::glad_post_callback(const char* name, void* funcptr, int len_args, ...) { }
+
     void App::processWindowSize(int width, int height) {
         currentWindowWidth = width;
         currentWindowHeight = height;
@@ -218,7 +226,7 @@ namespace glvis {
             window = nullptr;
         }
         glfwTerminate();
-        
+
     }
 
     void App::start() {
