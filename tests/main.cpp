@@ -28,8 +28,6 @@ int main() {
     
     return 0;
     
-    // TODO: render textured rectangles
-    // TODO: resize textures
     // TODO: pivot point
     // TODO: Polygon shape
 }
