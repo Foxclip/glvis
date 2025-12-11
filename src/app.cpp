@@ -205,8 +205,20 @@ namespace glvis {
     }
 
     App::~App() {
-        glfwDestroyWindow(window);
+
+        screenRectangle.reset();
+        shapes.clear();
+        screenShaderUptr.reset();
+        defaultShaderUptr.reset();
+        screenTextureUptr.reset();
+        textures.clear();
+
+        if (window) {
+            glfwDestroyWindow(window);
+            window = nullptr;
+        }
         glfwTerminate();
+        
     }
 
     void App::start() {
