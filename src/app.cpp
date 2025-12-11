@@ -107,15 +107,15 @@ namespace glvis {
     glm::mat4 App::getViewMatrix() {
         glm::mat4 view = glm::mat4(1.0f);
         view = glm::translate(view, glm::vec3(currentWindowWidth / 2, currentWindowHeight / 2, 0.0f));
-        view = glm::scale(view, glm::vec3(camera.zoom, -camera.zoom, 1.0f));
-        view = glm::translate(view, glm::vec3(-camera.pos.x, -camera.pos.y, 0.0f));
+        view = glm::scale(view, glm::vec3(camera.getZoom(), -camera.getZoom(), 1.0f));
+        view = glm::translate(view, glm::vec3(-camera.getPosition().x, -camera.getPosition().y, 0.0f));
         return view;
     }
 
     glm::mat4 App::getInvViewMatrix() {
         glm::mat4 invView = glm::mat4(1.0f);
-        invView = glm::translate(invView, glm::vec3(camera.pos.x, camera.pos.y, 0.0f));
-        invView = glm::scale(invView, glm::vec3(1.0f / camera.zoom, -1.0f / camera.zoom, 1.0f));
+        invView = glm::translate(invView, glm::vec3(camera.getPosition().x, camera.getPosition().y, 0.0f));
+        invView = glm::scale(invView, glm::vec3(1.0f / camera.getZoom(), -1.0f / camera.getZoom(), 1.0f));
         invView = glm::translate(invView, glm::vec3(-currentWindowWidth / 2, -currentWindowHeight / 2, 0.0f));
         return invView;
     }
@@ -245,6 +245,10 @@ namespace glvis {
 
     }
 
+    Camera& App::getCamera() {
+        return camera;
+    }
+
     void App::start() {
         try {
             mainLoop();
@@ -277,4 +281,5 @@ namespace glvis {
         shapes.push_back(std::move(rect));
         return rectPtr;
     }
+
 }

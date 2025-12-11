@@ -13,11 +13,11 @@ namespace glvis {
         this->shader = common::defaultShader;
 
         const float quadVertices[] = {
-            // positions                 // texture Coords
-            -width / 2.0f,  height / 2.0f, 0.0f, 0.0f, 1.0f,
-            -width / 2.0f, -height / 2.0f, 0.0f, 0.0f, 0.0f,
-             width / 2.0f,  height / 2.0f, 0.0f, 1.0f, 1.0f,
-             width / 2.0f, -height / 2.0f, 0.0f, 1.0f, 0.0f
+            // positions   // texture Coords
+            0.0f,  height, 0.0f, 0.0f, 1.0f,
+            0.0f,  0.0f,   0.0f, 0.0f, 0.0f,
+            width, height, 0.0f, 1.0f, 1.0f,
+            width, 0.0f,   0.0f, 1.0f, 0.0f
         };
 
         const unsigned int quadIndices[] = {
@@ -70,6 +70,7 @@ namespace glvis {
             modelMatrix = glm::translate(modelMatrix, glm::vec3(position.x, position.y, 0.0f));
             modelMatrix = glm::rotate(modelMatrix, rotation, glm::vec3(0.0f, 0.0f, -1.0f));
             modelMatrix = glm::scale(modelMatrix, glm::vec3(scale.x, scale.y, 1.0f));
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(-origin.x, -origin.y, 0.0f));
             shader->use();
             shader->setMat4("model", modelMatrix);
             shader->setMat4("view", view);

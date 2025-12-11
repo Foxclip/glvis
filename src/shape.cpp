@@ -43,7 +43,16 @@ namespace glvis {
     void Shape::setScale(const Vector2& scale) {
         this->scale = scale;
     }
-    
+
+    void Shape::setOrigin(float x, float y) {
+        this->origin.x = x;
+        this->origin.y = y;
+    }
+
+    void Shape::setOrigin(const Vector2& origin) {
+        this->origin = origin;
+    }
+
     void Shape::setShader(Shader* shader) {
         this->shader = shader;
     }

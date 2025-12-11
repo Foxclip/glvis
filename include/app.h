@@ -33,6 +33,7 @@ namespace glvis {
     public:
         App();
         ~App();
+        Camera& getCamera();
         void start();
         Texture* addTexture(const std::filesystem::path& path);
         void removeTexture(Texture* texture);
