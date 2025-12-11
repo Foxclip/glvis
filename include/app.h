@@ -16,7 +16,14 @@ namespace glvis {
     const int DEFAULT_WINDOW_HEIGHT = 600;
     const float CAMERA_ZOOM_FACTOR = 1.2f;
 
-    struct Camera {
+    class Camera {
+    public:
+        const glm::vec2& getPosition() const;
+        float getZoom() const;
+        void setPosition(const glm::vec2& pos);
+        void setZoom(float zoom);
+
+    private:
         glm::vec2 pos = glm::vec2(0.0f, 0.0f);
         float zoom = 1.0f;
     };

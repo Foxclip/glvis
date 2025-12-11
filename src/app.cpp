@@ -7,6 +7,22 @@
 
 namespace glvis {
 
+    const glm::vec2& Camera::getPosition() const {
+        return pos;
+    }
+
+    float Camera::getZoom() const {
+        return zoom;
+    }
+
+    void Camera::setPosition(const glm::vec2& pos) {
+        this->pos = pos;
+    }
+
+    void Camera::setZoom(float zoom) {
+        this->zoom = zoom;
+    }
+
     GLFWwindow* App::init() {
         if (!glfwInit()) {
             std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -163,8 +179,8 @@ namespace glvis {
         float xoffset = (float)xpos - mouseX;
         float yoffset = (float)ypos - mouseY;
         if (rightMousePressed) {
-            camera.pos.x -= xoffset / camera.zoom;
-            camera.pos.y -= yoffset / camera.zoom;
+            glm::vec2 offset = glm::vec2(xoffset / camera.getZoom(), yoffset / camera.getZoom());
+            camera.setPosition(camera.getPosition() - offset);
         }
         mouseX = (int)xpos;
         mouseY = (int)ypos;
@@ -188,9 +204,9 @@ namespace glvis {
 
     void App::processMouseScroll(double x, double y) {
         float zoomFactor = powf(CAMERA_ZOOM_FACTOR, (float)y);
-        camera.zoom *= zoomFactor;
-        camera.pos.x = (camera.pos.x - mouseXWorld) / zoomFactor + mouseXWorld;
-        camera.pos.y = (camera.pos.y - mouseYWorld) / zoomFactor + mouseYWorld;
+        camera.setZoom(camera.getZoom() * zoomFactor);
+        glm::vec2 mouseWorld = glm::vec2(mouseXWorld, mouseYWorld);
+        camera.setPosition((camera.getPosition() - mouseWorld) / zoomFactor + mouseWorld);
     }
 
     void App::processMouseLeftPress(int x, int y) {
