@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
 #include "rectangle.h"
+#include "circle.h"
 #include "texture.h"
 #include "render_texture.h"
 
@@ -37,6 +38,7 @@ namespace glvis {
         void removeTexture(Texture* texture);
         void removeTexture(const std::filesystem::path& path);
         Rectangle* addRectangle(float width, float height);
+        Circle* addCircle(float radius = 0.0f, size_t numSegments = 30);
 
     private:
         GLFWwindow* window = nullptr;

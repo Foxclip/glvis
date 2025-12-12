@@ -88,6 +88,13 @@ namespace glvis {
         return rectPtr;
     }
 
+    Circle* App::addCircle(float radius, size_t numSegments) {
+        std::unique_ptr<Circle> circle = std::make_unique<Circle>(radius, numSegments);
+        Circle* circlePtr = circle.get();
+        shapes.push_back(std::move(circle));
+        return circlePtr;
+    }
+
     GLFWwindow* App::init(int width, int height) {
         if (!glfwInit()) {
             std::cerr << "Failed to initialize GLFW" << std::endl;

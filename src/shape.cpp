@@ -10,7 +10,7 @@ namespace glvis {
         return position.y;
     }
 
-    Vector2 Shape::getPosition() const {
+    const Vector2& Shape::getPosition() const {
         return position;
     }
 
@@ -56,4 +56,5 @@ namespace glvis {
     void Shape::setShader(Shader* shader) {
         this->shader = shader;
     }
+
 }

@@ -1,15 +1,17 @@
 #pragma once
 
 #include "vector.h"
-#include "shader.h"
+#include <glm/glm.hpp>
 
 namespace glvis {
+
+    class Shader;
 
     class Shape {
     public:
         float getX() const;
         float getY() const;
-        Vector2 getPosition() const;
+        const Vector2& getPosition() const;
         float getRotation() const;
         const Vector2& getScale() const;
         const Vector2& getPivot() const;
