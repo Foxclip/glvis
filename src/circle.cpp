@@ -24,12 +24,14 @@ namespace glvis {
         vertices.push_back(0.5f);
         vertices.push_back(0.5f);
         for (size_t i = 0; i < numSegments; i++) {
-            float x = radius * cos(theta * i) + radius;
-            float y = radius * sin(theta * i) + radius;
+            float x = radius * cos(theta * i);
+            float y = radius * sin(theta * i);
+            float x_shifted = x + radius;
+            float y_shifted = y + radius;
             float texX = (x / radius + 1.0f) / 2.0f;
             float texY = (y / radius + 1.0f) / 2.0f;
-            vertices.push_back(x);
-            vertices.push_back(y);
+            vertices.push_back(x_shifted);
+            vertices.push_back(y_shifted);
             vertices.push_back(0.0f);
             vertices.push_back(texX);
             vertices.push_back(texY);
@@ -63,6 +65,10 @@ namespace glvis {
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
         glDeleteBuffers(1, &EBO);
+    }
+
+    void Circle::setTexture(AbstractTexture* texture) {
+        this->texture = texture;
     }
 
     void Circle::render(const glm::mat4& view, const glm::mat4& projection) const {

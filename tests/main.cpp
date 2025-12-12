@@ -18,9 +18,10 @@ int main() {
         rect2->setTexture(boxTexture);
         rect2->setPosition(200.0f, 0.0f);
         rect2->setRotation(glm::radians(10.0f));
-        glvis::Circle* circle1 = app.addCircle(50.0f, 6);
+        glvis::Circle* circle1 = app.addCircle(50.0f, 30);
         circle1->setOrigin(50.0f, 50.0f);
         circle1->setPosition(400.0f, 0.0f);
+        circle1->setTexture(boxTexture);
 
         app.start();
 
@@ -33,7 +34,6 @@ int main() {
     
     return 0;
     
-    // TODO: Circle shape
     // TODO: line drawing
     // TODO: text rendering
     // TODO: transparent texture rendering

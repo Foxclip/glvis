@@ -10,6 +10,7 @@ namespace glvis {
     public:
         Circle(float radius = 0, size_t numSegments = 30);
         ~Circle();
+        void setTexture(AbstractTexture* texture);
         void render(const glm::mat4& view, const glm::mat4& projection) const override;
 
     private:
