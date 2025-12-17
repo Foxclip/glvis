@@ -34,7 +34,9 @@ int main() {
     
     return 0;
     
+    // TODO: Angle class
     // TODO: line drawing
+    // TODO: vertex array
     // TODO: text rendering
     // TODO: transparent texture rendering
 }
