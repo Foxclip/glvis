@@ -20,7 +20,6 @@ namespace glvis {
         std::vector<unsigned int> indices;
         vertices.push_back(0.0f + radius);
         vertices.push_back(0.0f + radius);
-        vertices.push_back(0.0f);
         vertices.push_back(0.5f);
         vertices.push_back(0.5f);
         for (size_t i = 0; i < numSegments; i++) {
@@ -32,7 +31,6 @@ namespace glvis {
             float texY = (y / radius + 1.0f) / 2.0f;
             vertices.push_back(x_shifted);
             vertices.push_back(y_shifted);
-            vertices.push_back(0.0f);
             vertices.push_back(texX);
             vertices.push_back(texY);
         }
@@ -53,9 +51,9 @@ namespace glvis {
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
