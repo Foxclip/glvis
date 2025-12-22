@@ -1,0 +1,6 @@
+BasedOnStyle: LLVM
+BreakBeforeBraces: Attach
+AllowShortFunctionsOnASingleLine: None
+IndentWidth: 4
+NamespaceIndentation: All
+FixNamespaceComments: false
