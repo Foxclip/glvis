@@ -14,7 +14,7 @@ namespace glvis {
         return position;
     }
 
-    float Shape::getRotation() const {
+    const Angle& Shape::getRotation() const {
         return rotation;
     }
 
@@ -31,7 +31,7 @@ namespace glvis {
         this->position = position;
     }
 
-    void Shape::setRotation(float rotation) {
+    void Shape::setRotation(const Angle& rotation) {
         this->rotation = rotation;
     }
 

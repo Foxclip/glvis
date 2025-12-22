@@ -17,7 +17,7 @@ int main() {
         glvis::Rectangle* rect2 = app.addRectangle(100.0f, 100.0f);
         rect2->setTexture(boxTexture);
         rect2->setPosition(200.0f, 0.0f);
-        rect2->setRotation(glm::radians(10.0f));
+        rect2->setRotation(glvis::degrees(10.0f));
         glvis::Circle* circle1 = app.addCircle(50.0f, 30);
         circle1->setOrigin(50.0f, 50.0f);
         circle1->setPosition(400.0f, 0.0f);
@@ -34,7 +34,6 @@ int main() {
     
     return 0;
     
-    // TODO: Angle class
     // TODO: line drawing
     // TODO: vertex array
     // TODO: text rendering

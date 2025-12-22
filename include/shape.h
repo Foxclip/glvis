@@ -2,6 +2,7 @@
 
 #include "vector.h"
 #include <glm/glm.hpp>
+#include "angle.h"
 
 namespace glvis {
 
@@ -12,12 +13,12 @@ namespace glvis {
         float getX() const;
         float getY() const;
         const Vector2& getPosition() const;
-        float getRotation() const;
+        const Angle& getRotation() const;
         const Vector2& getScale() const;
         const Vector2& getPivot() const;
         void setPosition(float x, float y);
         void setPosition(const Vector2& position);
-        void setRotation(float rotation);
+        void setRotation(const Angle& rotation);
         void setScale(float x, float y);
         void setScale(const Vector2& scale);
         void setOrigin(float x, float y);
@@ -28,7 +29,7 @@ namespace glvis {
     protected:
         Shader* shader = nullptr;
         Vector2 position;
-        float rotation = 0.0f;
+        Angle rotation;
         Vector2 scale = Vector2(1.0f, 1.0f);
         Vector2 origin = Vector2(0.0f, 0.0f);
 

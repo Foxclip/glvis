@@ -68,7 +68,7 @@ namespace glvis {
             if (shader == nullptr) throw std::runtime_error("Shader not set");
             glm::mat4 modelMatrix = glm::mat4(1.0f);
             modelMatrix = glm::translate(modelMatrix, glm::vec3(position.x, position.y, 0.0f));
-            modelMatrix = glm::rotate(modelMatrix, rotation, glm::vec3(0.0f, 0.0f, -1.0f));
+            modelMatrix = glm::rotate(modelMatrix, rotation.asRadians(), glm::vec3(0.0f, 0.0f, -1.0f));
             modelMatrix = glm::scale(modelMatrix, glm::vec3(scale.x, scale.y, 1.0f));
             modelMatrix = glm::translate(modelMatrix, glm::vec3(-origin.x, -origin.y, 0.0f));
             shader->use();
