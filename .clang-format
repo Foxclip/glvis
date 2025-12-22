@@ -4,3 +4,4 @@ AllowShortFunctionsOnASingleLine: None
 IndentWidth: 4
 NamespaceIndentation: All
 FixNamespaceComments: false
+ReferenceAlignment: Left

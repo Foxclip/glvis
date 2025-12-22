@@ -22,6 +22,10 @@ namespace glvis {
         return scale;
     }
 
+    const Vector2& Shape::getOrigin() const {
+        return origin;
+    }
+
     void Shape::setPosition(float x, float y) {
         this->position.x = x;
         this->position.y = y;

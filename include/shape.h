@@ -15,7 +15,7 @@ namespace glvis {
         const Vector2& getPosition() const;
         const Angle& getRotation() const;
         const Vector2& getScale() const;
-        const Vector2& getPivot() const;
+        const Vector2& getOrigin() const;
         void setPosition(float x, float y);
         void setPosition(const Vector2& position);
         void setRotation(const Angle& rotation);

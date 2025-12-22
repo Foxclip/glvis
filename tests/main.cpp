@@ -34,8 +34,11 @@ int main() {
     
     return 0;
     
-    // TODO: line drawing
+    // TODO: make positions 2D
+    // TODO: vertex buffer
     // TODO: vertex array
+    // TODO: change enum to enum class
+    // TODO: Drawable class
     // TODO: text rendering
     // TODO: transparent texture rendering
 }
