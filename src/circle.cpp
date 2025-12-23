@@ -16,63 +16,35 @@ namespace glvis {
         this->shader = common::defaultShader;
 
         float theta = (float)(2.0 * M_PI / numSegments);
-        std::vector<float> vertices;
-        std::vector<unsigned int> indices;
-        vertices.push_back(0.0f + radius);
-        vertices.push_back(0.0f + radius);
-        vertices.push_back(1.0f);  // R
-        vertices.push_back(1.0f);  // G
-        vertices.push_back(1.0f);  // B
-        vertices.push_back(1.0f);  // A
-        vertices.push_back(0.5f);
-        vertices.push_back(0.5f);
-        for (size_t i = 0; i < numSegments; i++) {
+        std::vector<Vertex> vertices;
+        // Add center vertex
+        vertices.push_back(Vertex {
+            Vector2(radius, radius), // position
+            Color(1.0f, 1.0f, 1.0f, 1.0f), // color
+            Vector2(0.5f, 0.5f) // texCoords
+        });
+        for (size_t i = 0; i <= numSegments; i++) {
             float x = radius * cos(theta * i);
             float y = radius * sin(theta * i);
             float x_shifted = x + radius;
             float y_shifted = y + radius;
             float texX = (x / radius + 1.0f) / 2.0f;
             float texY = (y / radius + 1.0f) / 2.0f;
-            vertices.push_back(x_shifted);
-            vertices.push_back(y_shifted);
-            vertices.push_back(1.0f);  // R
-            vertices.push_back(1.0f);  // G
-            vertices.push_back(1.0f);  // B
-            vertices.push_back(1.0f);  // A
-            vertices.push_back(texX);
-            vertices.push_back(texY);
+            vertices.push_back(Vertex {
+                Vector2(x_shifted, y_shifted), // position
+                Color(1.0f, 1.0f, 1.0f, 1.0f), // color
+                Vector2(texX, texY) // texCoords
+            });
         }
-        for (size_t i = 0; i < numSegments - 1; i++) {
-            indices.push_back(0);
-            indices.push_back((int)i + 1);
-            indices.push_back((int)i + 2);
-        }
-        indices.push_back(0);
-        indices.push_back((int)numSegments);
-        indices.push_back(1);
 
-        glGenBuffers(1, &VBO);
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &EBO);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        // Initialize vertex buffer with all vertices
+        vertexBuffer.create(vertices.size());
+        vertexBuffer.update(vertices);
+        vertexBuffer.setPrimitiveType(PrimitiveType::TriangleFan);
     }
 
     Circle::~Circle() {
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &VBO);
-        glDeleteBuffers(1, &EBO);
+        // VertexBuffer destructor will handle cleanup
     }
 
     void Circle::setTexture(AbstractTexture* texture) {
@@ -100,8 +72,8 @@ namespace glvis {
                 shader->setInt("tex", -1);
                 shader->setBool("hasTexture", false);
             }
-            glBindVertexArray(VAO);
-            glDrawElements(GL_TRIANGLES, (int)numSegments * 3, GL_UNSIGNED_INT, 0);
+            glBindVertexArray(vertexBuffer.getVAO());
+            glDrawArrays(GL_TRIANGLE_FAN, 0, (int)vertexBuffer.getVertexCount());
         } catch (std::exception& e) {
             throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }

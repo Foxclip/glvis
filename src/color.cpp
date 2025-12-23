@@ -9,7 +9,7 @@ namespace glvis {
         a = 255;
     }
 
-    Color::Color(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a) {
+    Color::Color(float r, float g, float b, float a) {
         this->r = r;
         this->g = g;
         this->b = b;

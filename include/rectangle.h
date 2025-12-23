@@ -2,6 +2,7 @@
 
 #include "vector.h"
 #include "shape.h"
+#include "vertex_buffer.h"
 
 namespace glvis {
     
@@ -21,9 +22,7 @@ namespace glvis {
         AbstractTexture* texture = nullptr;
         float width = 0.0f;
         float height = 0.0f;
-        unsigned int VAO = 0;
-        unsigned int VBO = 0;
-        unsigned int EBO = 0;
+        VertexBuffer vertexBuffer;
 
     };
 

@@ -12,41 +12,42 @@ namespace glvis {
         this->height = height;
         this->shader = common::defaultShader;
 
-        const float quadVertices[] = {
-            // positions   // colors      // texture Coords
-            0.0f,  height, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            0.0f,  0.0f,   1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            width, height, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            width, 0.0f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f
-        };
+        // Create vertices for rectangle (2 triangles, 6 vertices total)
+        std::vector<Vertex> vertices(6);
+        // First triangle (0, height), (0, 0), (width, height)
+        vertices[0].position = Vector2(0.0f, height);
+        vertices[0].color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        vertices[0].texCoords = Vector2(0.0f, 1.0f);
+        
+        vertices[1].position = Vector2(0.0f, 0.0f);
+        vertices[1].color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        vertices[1].texCoords = Vector2(0.0f, 0.0f);
+        
+        vertices[2].position = Vector2(width, height);
+        vertices[2].color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        vertices[2].texCoords = Vector2(1.0f, 1.0f);
+        
+        // Second triangle (width, height), (0, 0), (width, 0)
+        vertices[3].position = Vector2(width, height);
+        vertices[3].color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        vertices[3].texCoords = Vector2(1.0f, 1.0f);
+        
+        vertices[4].position = Vector2(0.0f, 0.0f);
+        vertices[4].color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        vertices[4].texCoords = Vector2(0.0f, 0.0f);
+        
+        vertices[5].position = Vector2(width, 0.0f);
+        vertices[5].color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+        vertices[5].texCoords = Vector2(1.0f, 0.0f);
 
-        const unsigned int quadIndices[] = {
-            0, 1, 2,
-            2, 1, 3
-        };
-
-        glGenBuffers(1, &VBO);
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &EBO);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndices), quadIndices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(2 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        // Initialize vertex buffer with 6 vertices
+        vertexBuffer.create(6);
+        vertexBuffer.update(vertices);
+        vertexBuffer.setPrimitiveType(PrimitiveType::Triangles);
     }
 
     Rectangle::~Rectangle() {
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &VBO);
-        glDeleteBuffers(1, &EBO);
+        // VertexBuffer destructor will handle cleanup
     }
 
     float Rectangle::getWidth() const {
@@ -77,7 +78,8 @@ namespace glvis {
             shader->setMat4("model", modelMatrix);
             shader->setMat4("view", view);
             shader->setMat4("projection", projection);
-            shader->setVec4("color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            // Commented out the color override to use vertex colors
+            // shader->setVec4("color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
             if (texture) {
                 shader->setInt("tex", 0);
                 shader->setBool("hasTexture", true);
@@ -86,8 +88,9 @@ namespace glvis {
                 shader->setInt("tex", -1);
                 shader->setBool("hasTexture", false);
             }
-            glBindVertexArray(VAO);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            // Bind the vertex buffer's VAO and draw using the stored primitive type
+            glBindVertexArray(vertexBuffer.getVAO());
+            glDrawArrays(GL_TRIANGLES, 0, (int)vertexBuffer.getVertexCount());
         } catch (std::exception& e) {
             throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "vertex.h"
 #include <vector>
 #include "common.h"
+#include "vertex.h"
 
 namespace glvis {
     
@@ -15,6 +15,7 @@ namespace glvis {
         bool update(const std::vector<Vertex>& newVertices);
         PrimitiveType getPrimitiveType() const;
         void setPrimitiveType(PrimitiveType type);
+        unsigned int getVAO() const;
 
     private:
         PrimitiveType type = PrimitiveType::Triangles;

@@ -5,10 +5,13 @@ namespace glvis {
     
     class Color {
     public:
-        std::uint8_t r, g, b, a;
+        float r = 0.0f;
+        float g = 0.0f;
+        float b = 0.0f;
+        float a = 1.0f;
 
         Color();
-        Color(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255);
+        Color(float r, float g, float b, float a = 1.0f);
 
     };
 

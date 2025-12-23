@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "vertex.h"
 
 namespace glvis {
 
@@ -70,5 +71,9 @@ bool VertexBuffer::create(std::size_t vertexCount) {
 
     void VertexBuffer::setPrimitiveType(PrimitiveType type) {
         this->type = type;
+    }
+    
+    unsigned int VertexBuffer::getVAO() const {
+        return VAO;
     }
 }

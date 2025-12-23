@@ -3,6 +3,7 @@
 #include "shape.h"
 #include <glm/glm.hpp>
 #include "texture.h"
+#include "vertex_buffer.h"
 
 namespace glvis {
 
@@ -17,9 +18,7 @@ namespace glvis {
         AbstractTexture* texture = nullptr;
         float radius = 0.0f;
         size_t numSegments = 0;
-        unsigned int VAO = 0;
-        unsigned int VBO = 0;
-        unsigned int EBO = 0;
+        VertexBuffer vertexBuffer;
         
     };
 
