@@ -26,6 +26,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${SRC_DIR}/app.cpp
     ${SRC_DIR}/camera.cpp
     ${SRC_DIR}/circle.cpp
+    ${SRC_DIR}/color.cpp
     ${SRC_DIR}/common.cpp
     ${SRC_DIR}/rectangle.cpp
     ${SRC_DIR}/render_texture.cpp
@@ -34,6 +35,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${SRC_DIR}/texture.cpp
     ${SRC_DIR}/utils.cpp
     ${SRC_DIR}/vector.cpp
+    ${SRC_DIR}/vertex_buffer.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${INCLUDE_DIR}

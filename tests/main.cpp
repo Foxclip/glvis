@@ -34,8 +34,9 @@ int main() {
     
     return 0;
     
-    // TODO: make positions 2D
-    // TODO: vertex buffer
+    // TODO: use VertexBuffer in shapes
+    // TODO: make glCall macro with comma operator
+    // TODO: replace try and catch in functions with macros
     // TODO: vertex array
     // TODO: change enum to enum class
     // TODO: Drawable class
