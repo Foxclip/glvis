@@ -34,7 +34,7 @@ int main() {
     
     return 0;
     
-    // TODO: Color: store as std::uint8_t, send to shaders as floats
+    // TODO: VertexBuffer: add render method
     // TODO: make glCall macro with comma operator
     // TODO: replace try and catch in functions with macros
     // TODO: vertex array
