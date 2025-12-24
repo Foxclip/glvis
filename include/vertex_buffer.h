@@ -3,6 +3,7 @@
 #include <vector>
 #include "common.h"
 #include "vertex.h"
+#include <glm/glm.hpp>
 
 namespace glvis {
     
@@ -16,6 +17,7 @@ namespace glvis {
         PrimitiveType getPrimitiveType() const;
         void setPrimitiveType(PrimitiveType type);
         unsigned int getVAO() const;
+        void render(const glm::mat4& view, const glm::mat4& projection) const;
 
     private:
         PrimitiveType type = PrimitiveType::Triangles;

@@ -76,4 +76,9 @@ bool VertexBuffer::create(std::size_t vertexCount) {
     unsigned int VertexBuffer::getVAO() const {
         return VAO;
     }
+
+    void VertexBuffer::render(const glm::mat4& view, const glm::mat4& projection) const {
+        glBindVertexArray(VAO);
+        glDrawArrays(static_cast<GLenum>(type), 0, static_cast<GLsizei>(getVertexCount()));
+    }
 }

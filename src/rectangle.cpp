@@ -88,9 +88,7 @@ namespace glvis {
                 shader->setInt("tex", -1);
                 shader->setBool("hasTexture", false);
             }
-            // Bind the vertex buffer's VAO and draw using the stored primitive type
-            glBindVertexArray(vertexBuffer.getVAO());
-            glDrawArrays(GL_TRIANGLES, 0, (int)vertexBuffer.getVertexCount());
+            vertexBuffer.render(view, projection);
         } catch (std::exception& e) {
             throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }

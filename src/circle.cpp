@@ -72,8 +72,7 @@ namespace glvis {
                 shader->setInt("tex", -1);
                 shader->setBool("hasTexture", false);
             }
-            glBindVertexArray(vertexBuffer.getVAO());
-            glDrawArrays(GL_TRIANGLE_FAN, 0, (int)vertexBuffer.getVertexCount());
+            vertexBuffer.render(view, projection);
         } catch (std::exception& e) {
             throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }
