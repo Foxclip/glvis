@@ -27,7 +27,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${SRC_DIR}/camera.cpp
     ${SRC_DIR}/circle.cpp
     ${SRC_DIR}/color.cpp
-    ${SRC_DIR}/common.cpp
+    ${SRC_DIR}/glvis_common.cpp
     ${SRC_DIR}/rectangle.cpp
     ${SRC_DIR}/render_texture.cpp
     ${SRC_DIR}/shader.cpp

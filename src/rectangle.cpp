@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdexcept>
-#include "common.h"
+#include "glvis_common.h"
 #include "texture.h"
 
 namespace glvis {

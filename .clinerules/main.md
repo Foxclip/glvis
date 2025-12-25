@@ -1,0 +1,2 @@
+- If you run cmake build, run iy only in /build folder.
+- When you search for files, make sure in which folder you are, in the root directory of the project or not.

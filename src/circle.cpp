@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <stdexcept>
 #include <corecrt_math_defines.h>
-#include "common.h"
+#include "glvis_common.h"
 #include "texture.h"
 #include "shader.h"
 #include <iostream>
