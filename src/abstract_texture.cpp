@@ -1,6 +1,7 @@
 #include "abstract_texture.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "glvis_common.h"
 
 namespace glvis {
 
@@ -17,11 +18,11 @@ namespace glvis {
     }
 
     void AbstractTexture::bind() {
-        glBindTexture(GL_TEXTURE_2D, ID);
+        GL_CALL(glBindTexture(GL_TEXTURE_2D, ID));
     }
 
     void AbstractTexture::unbind() {
-        glBindTexture(GL_TEXTURE_2D, 0);
+        GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
     }
 
     void AbstractTexture::resize(int newWidth, int newHeight) {
@@ -29,23 +30,23 @@ namespace glvis {
     }
 
     AbstractTexture::~AbstractTexture() {
-        glDeleteTextures(1, &ID);
+        GL_CALL(glDeleteTextures(1, &ID));
     }
 
     void AbstractTexture::createEmptyTexture(int width, int height) {
-        glGenTextures(1, &ID);
-        glBindTexture(GL_TEXTURE_2D, ID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        GL_CALL(glGenTextures(1, &ID));
+        GL_CALL(glBindTexture(GL_TEXTURE_2D, ID));
+        GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
+        GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+        GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+        GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
     }
 
     void AbstractTexture::resizeTexture(int newWidth, int newHeight) {
-        glBindTexture(GL_TEXTURE_2D, ID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        GL_CALL(glBindTexture(GL_TEXTURE_2D, ID));
+        GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, newWidth, newHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
+        GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+        GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+        GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
     }
 }

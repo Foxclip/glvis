@@ -1,13 +1,35 @@
 #pragma once
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include "shader.h"
+#include <iostream>
 
 namespace glvis {
 
+    void check_opengl_errors();
+
     namespace common {
-
-        extern glvis::Shader* defaultShader;
-
+        extern Shader* defaultShader;
     }
+
+    template<typename FuncType>
+    auto glCall(FuncType&& f) {
+        if constexpr (std::is_same_v<decltype(f()), void>) {
+            f();
+            check_opengl_errors();
+        } else {
+            auto result = f();
+            check_opengl_errors();
+            return result;
+        }
+    }
+
+
+#ifdef NDEBUG
+    #define GL_CALL(x) x
+#else
+    #define GL_CALL(x) glCall([&] { return x; })
+#endif
 
 }

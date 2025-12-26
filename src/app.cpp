@@ -135,10 +135,10 @@ namespace glvis {
 
         while (!glfwWindowShouldClose(window)) {
 
-            glBindFramebuffer(GL_FRAMEBUFFER, screenTextureUptr->getFBO());
-            glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            glViewport(0, 0, currentWindowWidth, currentWindowHeight);
+            GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, screenTextureUptr->getFBO()));
+            GL_CALL(glClearColor(0.2f, 0.3f, 0.8f, 1.0f));
+            GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
+            GL_CALL(glViewport(0, 0, currentWindowWidth, currentWindowHeight));
 
             glm::mat4 view = getViewMatrix();
             glm::mat4 projection = glm::mat4(1.0f);
@@ -149,12 +149,12 @@ namespace glvis {
                 shape->render(view, projection);
             }
 
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
             // render quad with framebuffer to screen
-            glViewport(0, 0, currentWindowWidth, currentWindowHeight);
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            GL_CALL(glViewport(0, 0, currentWindowWidth, currentWindowHeight));
+            GL_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+            GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
             screenRectangle->render(view, projection);
 
             glfwSwapBuffers(window);

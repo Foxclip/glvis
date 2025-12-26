@@ -31,11 +31,8 @@ int main() {
         std::cerr << "ERROR: " << e << std::endl;
     }
 
-    
     return 0;
     
-    // TODO: VertexBuffer: add render method
-    // TODO: make glCall macro with comma operator
     // TODO: replace try and catch in functions with macros
     // TODO: vertex array
     // TODO: change enum to enum class

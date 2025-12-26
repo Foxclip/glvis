@@ -75,6 +75,7 @@ namespace glvis {
             modelMatrix = glm::scale(modelMatrix, glm::vec3(scale.x, scale.y, 1.0f));
             modelMatrix = glm::translate(modelMatrix, glm::vec3(-origin.x, -origin.y, 0.0f));
             shader->use();
+            // No GL_CALL needed here as it's a method call
             shader->setMat4("model", modelMatrix);
             shader->setMat4("view", view);
             shader->setMat4("projection", projection);

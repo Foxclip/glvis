@@ -1,6 +1,7 @@
 #include "shader.h"
 #include "utils.h"
 #include <glad/glad.h>
+#include "glvis_common.h"
 
 namespace glvis {
 
@@ -8,64 +9,64 @@ namespace glvis {
         try {
             unsigned int vertexShader = compileShader(VERTEX, vertexPath);
             unsigned int fragmentShader = compileShader(FRAGMENT, fragmentPath);
-            ID = glCreateProgram();
-            glAttachShader(ID, vertexShader);
-            glAttachShader(ID, fragmentShader);
-            glLinkProgram(ID);
+            ID = GL_CALL(glCreateProgram());
+            GL_CALL(glAttachShader(ID, vertexShader));
+            GL_CALL(glAttachShader(ID, fragmentShader));
+            GL_CALL(glLinkProgram(ID));
             int success;
-            glGetProgramiv(ID, GL_LINK_STATUS, &success);
+            GL_CALL(glGetProgramiv(ID, GL_LINK_STATUS, &success));
             if (!success) {
                 char infoLog[8192];
-                glGetProgramInfoLog(ID, 8192, NULL, infoLog);
+                GL_CALL(glGetProgramInfoLog(ID, 8192, NULL, infoLog));
                 throw std::format("Linking failed\n{}", infoLog);
             }
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
+            GL_CALL(glDeleteShader(vertexShader));
+            GL_CALL(glDeleteShader(fragmentShader));
         } catch (std::exception& e) {
             throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
         }
     }
 
     void Shader::use() {
-        glUseProgram(ID);
+        GL_CALL(glUseProgram(ID));
     }
 
     void Shader::setBool(const std::string& name, bool value) const {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
+        GL_CALL(glUniform1i(GL_CALL(glGetUniformLocation(ID, name.c_str())), (int)value));
     }
 
     void Shader::setInt(const std::string& name, int value) const {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+        GL_CALL(glUniform1i(GL_CALL(glGetUniformLocation(ID, name.c_str())), (int)value));
     }
 
     void Shader::setFloat(const std::string& name, float value) const {
-        glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+        GL_CALL(glUniform1f(GL_CALL(glGetUniformLocation(ID, name.c_str())), value));
     }
 
     void Shader::setVec3(const std::string &name, const glm::vec3 &value) const {
-        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(value));
+        GL_CALL(glUniform3fv(GL_CALL(glGetUniformLocation(ID, name.c_str())), 1, glm::value_ptr(value)));
     }
 
     void Shader::setVec4(const std::string &name, const glm::vec4 &value) const {
-        glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(value));
+        GL_CALL(glUniform4fv(GL_CALL(glGetUniformLocation(ID, name.c_str())), 1, glm::value_ptr(value)));
     }
 
     void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
-        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+        GL_CALL(glUniformMatrix4fv(GL_CALL(glGetUniformLocation(ID, name.c_str())), 1, GL_FALSE, glm::value_ptr(value)));
     }
 
     int Shader::compileShader(ShaderType type, const std::string& path) {
         try {
             std::string source = file_to_str(path);
             const char* sourceCstr = source.c_str();
-            unsigned int shader = glCreateShader(type == VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
-            glShaderSource(shader, 1, &sourceCstr, NULL);
-            glCompileShader(shader);
+            unsigned int shader = GL_CALL(glCreateShader(type == VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER));
+            GL_CALL(glShaderSource(shader, 1, &sourceCstr, NULL));
+            GL_CALL(glCompileShader(shader));
             int success;
             char infoLog[8192];
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+            GL_CALL(glGetShaderiv(shader, GL_COMPILE_STATUS, &success));
             if (!success) {
-                glGetShaderInfoLog(shader, 8192, NULL, infoLog);
+                GL_CALL(glGetShaderInfoLog(shader, 8192, NULL, infoLog));
                 std::string typeStr = type == VERTEX ? "Vertex" : "Fragment";
                 throw std::runtime_error(std::format("{} shader compilation failed: {}\n{}", typeStr, path, infoLog));
             }
