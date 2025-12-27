@@ -6,7 +6,7 @@
 namespace glvis {
 
     Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) {
-        try {
+        START_TRY
             unsigned int vertexShader = compileShader(VERTEX, vertexPath);
             unsigned int fragmentShader = compileShader(FRAGMENT, fragmentPath);
             ID = GL_CALL(glCreateProgram());
@@ -22,9 +22,7 @@ namespace glvis {
             }
             GL_CALL(glDeleteShader(vertexShader));
             GL_CALL(glDeleteShader(fragmentShader));
-        } catch (std::exception& e) {
-            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
-        }
+        END_TRY
     }
 
     void Shader::use() {
@@ -56,7 +54,7 @@ namespace glvis {
     }
 
     int Shader::compileShader(ShaderType type, const std::string& path) {
-        try {
+        START_TRY
             std::string source = file_to_str(path);
             const char* sourceCstr = source.c_str();
             unsigned int shader = GL_CALL(glCreateShader(type == VERTEX ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER));
@@ -71,9 +69,7 @@ namespace glvis {
                 throw std::runtime_error(std::format("{} shader compilation failed: {}\n{}", typeStr, path, infoLog));
             }
             return shader;
-        } catch (std::exception& e) {
-            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
-        }
+        END_TRY
     }
 
 }

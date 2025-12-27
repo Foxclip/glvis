@@ -32,4 +32,10 @@ namespace glvis {
     #define GL_CALL(x) glCall([&] { return x; })
 #endif
 
+#define START_TRY try {
+#define END_TRY \
+    } catch (std::exception& e) { \
+        throw std::runtime_error(__FUNCTION__": " + std::string(e.what())); \
+    }
+
 }

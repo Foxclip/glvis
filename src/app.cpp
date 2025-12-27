@@ -7,14 +7,12 @@
 namespace glvis {
 
     App::App(int width, int height) {
-        try {
+        START_TRY
             window = init(width, height);
             if (!window) {
                 throw std::runtime_error("Failed to initialize GLFW window");
             }
-        } catch (std::exception& e) {
-            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
-        }
+        END_TRY
     }
 
     App::~App() {
@@ -35,15 +33,13 @@ namespace glvis {
     }
 
         Camera& App::getCamera() {
-        return camera;
-    }
+            return camera;
+        }
 
     void App::start() {
-        try {
+        START_TRY
             mainLoop();
-        } catch (std::exception& e) {
-            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
-        }
+        END_TRY
     }
 
     Texture* App::addTexture(const std::filesystem::path& path) {

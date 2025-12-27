@@ -67,7 +67,7 @@ namespace glvis {
     }
 
     void Rectangle::render(const glm::mat4& view, const glm::mat4& projection) const {
-        try {
+        START_TRY
             if (shader == nullptr) throw std::runtime_error("Shader not set");
             glm::mat4 modelMatrix = glm::mat4(1.0f);
             modelMatrix = glm::translate(modelMatrix, glm::vec3(position.x, position.y, 0.0f));
@@ -90,8 +90,6 @@ namespace glvis {
                 shader->setBool("hasTexture", false);
             }
             vertexBuffer.render(view, projection);
-        } catch (std::exception& e) {
-            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
-        }
+        END_TRY
     }
 }

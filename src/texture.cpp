@@ -12,7 +12,7 @@ namespace glvis {
     }
 
     Texture::Texture(const std::filesystem::path &path) {
-        try {
+        START_TRY
             GL_CALL(glGenTextures(1, &ID));
             GL_CALL(glBindTexture(GL_TEXTURE_2D, ID));
             int width, height, nrChannels;
@@ -25,9 +25,7 @@ namespace glvis {
             }
             stbi_image_free(data);
             GL_CALL(glBindTexture(GL_TEXTURE_2D, 0));
-        } catch (std::exception& e) {
-            throw std::runtime_error(__FUNCTION__": " + std::string(e.what()));
-        }
+        END_TRY
     }
 
     const std::filesystem::path& Texture::getPath() const {
