@@ -39,7 +39,7 @@ void BlendModeTestsModule::blendModeDefaultTest(test::Test& test) {
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(200, 100, 100, 255)));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(150, 125, 114, 255)));
 }
 
 void BlendModeTestsModule::blendModeAlphaTest(test::Test& test) {
@@ -61,7 +61,7 @@ void BlendModeTestsModule::blendModeAlphaTest(test::Test& test) {
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(192, 100, 100, 255)));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(100, 100, 89, 191)));
 }
 
 void BlendModeTestsModule::blendModeAddTest(test::Test& test) {
@@ -83,7 +83,7 @@ void BlendModeTestsModule::blendModeAddTest(test::Test& test) {
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(255, 204, 200, 255)));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(200, 200, 178, 255)));
 }
 
 void BlendModeTestsModule::blendModeMultiplyTest(test::Test& test) {
@@ -105,7 +105,7 @@ void BlendModeTestsModule::blendModeMultiplyTest(test::Test& test) {
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(220, 137, 125, 255)));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(89, 104, 89, 255)));
 }
 
 void BlendModeTestsModule::blendModeNoneTest(test::Test& test) {
@@ -127,7 +127,7 @@ void BlendModeTestsModule::blendModeNoneTest(test::Test& test) {
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(200, 100, 100, 255)));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(100, 50, 50, 128)));
 }
 
 void BlendModeTestsModule::blendModeOperatorEqualTest(test::Test& test) {
