@@ -4,6 +4,9 @@
 #include "glvx/rectangle.h"
 #include "glvx/render_states.h"
 
+inline const Color BLEND_SRC_COLOR(200, 100, 100, 128);
+inline const Color BLEND_BG_COLOR(100, 150, 128);
+
 BlendModeTestsModule::BlendModeTestsModule(
     const std::string& name,
     test::TestModule* parent,
@@ -24,19 +27,19 @@ void BlendModeTestsModule::blendModeDefaultTest(test::Test& test) {
     View view;
     view.setPosition(window.getCenter());
     window.setView(view);
-    window.clear(Color::Black);
 
     const Vector2f rect_size = Vector2f(10.0f, 10.0f);
     const Vector2i rect_size_int = static_cast<Vector2i>(rect_size);
     Rectangle rect(rect_size);
-    rect.setColor(Color::Red);
+    rect.setColor(BLEND_SRC_COLOR);
 
     RenderStates states;
+    window.clear(BLEND_BG_COLOR);
     window.draw(rect, states);
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color::Red));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(200, 100, 100, 255)));
 }
 
 void BlendModeTestsModule::blendModeAlphaTest(test::Test& test) {
@@ -49,16 +52,16 @@ void BlendModeTestsModule::blendModeAlphaTest(test::Test& test) {
     const Vector2f rect_size = Vector2f(10.0f, 10.0f);
     const Vector2i rect_size_int = static_cast<Vector2i>(rect_size);
     Rectangle rect(rect_size);
-    rect.setColor(Color(255, 0, 0, 255));
+    rect.setColor(BLEND_SRC_COLOR);
 
     RenderStates states;
     states.blend_mode = BlendAlpha;
-    window.clear(Color::Black);
+    window.clear(BLEND_BG_COLOR);
     window.draw(rect, states);
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color::Red));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(192, 100, 100, 255)));
 }
 
 void BlendModeTestsModule::blendModeAddTest(test::Test& test) {
@@ -71,16 +74,16 @@ void BlendModeTestsModule::blendModeAddTest(test::Test& test) {
     const Vector2f rect_size = Vector2f(10.0f, 10.0f);
     const Vector2i rect_size_int = static_cast<Vector2i>(rect_size);
     Rectangle rect(rect_size);
-    rect.setColor(Color(128, 0, 0, 255));
+    rect.setColor(BLEND_SRC_COLOR);
 
     RenderStates states;
     states.blend_mode = BlendAdd;
-    window.clear(Color::Black);
+    window.clear(BLEND_BG_COLOR);
     window.draw(rect, states);
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(128, 0, 0, 255)));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(255, 204, 200, 255)));
 }
 
 void BlendModeTestsModule::blendModeMultiplyTest(test::Test& test) {
@@ -93,16 +96,16 @@ void BlendModeTestsModule::blendModeMultiplyTest(test::Test& test) {
     const Vector2f rect_size = Vector2f(10.0f, 10.0f);
     const Vector2i rect_size_int = static_cast<Vector2i>(rect_size);
     Rectangle rect(rect_size);
-    rect.setColor(Color::Red);
+    rect.setColor(BLEND_SRC_COLOR);
 
     RenderStates states;
     states.blend_mode = BlendMultiply;
-    window.clear(Color::Black);
+    window.clear(BLEND_BG_COLOR);
     window.draw(rect, states);
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color::Black));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(220, 137, 125, 255)));
 }
 
 void BlendModeTestsModule::blendModeNoneTest(test::Test& test) {
@@ -115,16 +118,16 @@ void BlendModeTestsModule::blendModeNoneTest(test::Test& test) {
     const Vector2f rect_size = Vector2f(10.0f, 10.0f);
     const Vector2i rect_size_int = static_cast<Vector2i>(rect_size);
     Rectangle rect(rect_size);
-    rect.setColor(Color::Red);
+    rect.setColor(BLEND_SRC_COLOR);
 
     RenderStates states;
     states.blend_mode = BlendNone;
-    window.clear(Color::White);
+    window.clear(BLEND_BG_COLOR);
     window.draw(rect, states);
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color::Red));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(200, 100, 100, 255)));
 }
 
 void BlendModeTestsModule::blendModeOperatorEqualTest(test::Test& test) {
@@ -152,7 +155,7 @@ void BlendModeTestsModule::blendModeCustomTest(test::Test& test) {
     const Vector2f rect_size = Vector2f(10.0f, 10.0f);
     const Vector2i rect_size_int = static_cast<Vector2i>(rect_size);
     Rectangle rect(rect_size);
-    rect.setColor(Color::Red);
+    rect.setColor(BLEND_SRC_COLOR);
 
     BlendMode custom;
     custom.colorSrcFactor = BlendMode::Factor::Zero;
@@ -162,10 +165,10 @@ void BlendModeTestsModule::blendModeCustomTest(test::Test& test) {
 
     RenderStates states;
     states.blend_mode = custom;
-    window.clear(Color::Green);
+    window.clear(BLEND_BG_COLOR);
     window.draw(rect, states);
     window.display();
 
     Image image = window.readPixels();
-    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color::Green));
+    T_WRAP_CONTAINER(checkPixelColor(test, image, Vector2i(), rect_size_int, Color(100, 150, 128, 255)));
 }
