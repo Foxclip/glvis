@@ -8,14 +8,11 @@ namespace glvx {
 class AbstractTexture;
 class Shader;
 
-class RenderStates {
-public:
-    RenderStates();
-
+struct RenderStates {
     Transform transform;
-    AbstractTexture* texture;
-    Shader* shader;
-    bool texture_is_premultiplied;
+    AbstractTexture* texture = nullptr;
+    Shader* shader = nullptr;
+    bool premultiply_output = false;
     BlendMode blend_mode;
 };
 
